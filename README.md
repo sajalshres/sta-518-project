@@ -4,7 +4,7 @@
 
 Airbnb is an online marketplace that allows millions of people to rent their homes/apartments on a short-term basis to visitors. It provides a medium that connects over 4 million hosts and tourists. I want to explore how Airbnb empowers residential communities and understand the platform, customers, host behavior, and famous neighborhoods.
 
-I want to develop a web application that provides an interactive dashboard containing visualizations to gain insights about Airbnb using the Airbnb dataset in the USA. I also plan to create an API allowing everyone, including students, analysts, and developers, to quickly fetch the data for their tasks.
+I want to develop a web application that provides an interactive dashboard containing visualizations to gain insights about Airbnb using the Airbnb dataset in the USA. I also plan to create an API allowing everyone, including students, analysts, and developers, to quickly fetch the data and use it to perform some analysis.
 
 ## Objectives
 

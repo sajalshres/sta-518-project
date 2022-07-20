@@ -1,0 +1,29 @@
+---
+title: "Airbnb Data Analysis"
+author: "Sajal Shrestha"
+output: github_document
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+## Setup
+
+```{r load_package, message=FALSE}
+library(tidyverse)
+```
+
+```{r}
+listings <- readr::read_csv("../data/raw/chicago_listings.csv")
+listings_missing_data <- listings
+listings_missing_data[listings_missing_data == ""] <- NA
+```
+
+```{r}
+which(is.na(listings_missing_data))
+```
+

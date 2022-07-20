@@ -7,3 +7,4 @@ locations <- page_data %>%
   html_text()
 
 print(locations)
+
