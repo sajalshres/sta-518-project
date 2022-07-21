@@ -1,0 +1,56 @@
+---
+title: "Bootstrapping"
+author: "Sajal Shrestha"
+date: "7/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-package}
+library(tidyverse)
+library(boot)
+```
+```{r data-overview}
+data("Loblolly", package = "datasets")
+head(Loblolly)
+```
+
+```{r data-summary}
+summary(Loblolly)
+```
+```{r bootstrap-statistics-function}
+# A function which when applied to data returns a vector containing the statistic(s) of interest.
+statistics_function <- function(data, i){
+ d2 <- data[i,] 
+ return(cor(d2$height, d2$age))
+}
+```
+
+```{r bootstrap-correlation}
+set.seed(518)
+bootstrap_correlation <- boot(Loblolly, statistic = statistics_function, R = 10000)
+
+bootstrap_correlation
+```
+
+```{r bootstrap-correlation-overview}
+summary(bootstrap_correlation)
+```
+
+```{r bootstrap-additional-statistics}
+class(bootstrap_correlation)
+
+range(bootstrap_correlation$t)
+
+mean(bootstrap_correlation$t)
+
+sd(bootstrap_correlation$t)
+```
+
+```{r bootstrap-confidence-interval}
+boot.ci(boot.out=bootstrap_correlation,type=c('norm','basic','perc','bca'))
+```
+
