@@ -19,11 +19,100 @@ library(tidyverse)
 
 ```{r}
 listings <- readr::read_csv("../data/raw/chicago_listings.csv")
-listings_missing_data <- listings
-listings_missing_data[listings_missing_data == ""] <- NA
+head(listings)
+
 ```
 
 ```{r}
-which(is.na(listings_missing_data))
+listings_missing_data <- listings
+
+# Fix date format
+listings$last_scraped <- format(as.Date(listings$last_scraped), "%m/%d/%Y")
+listings$host_since <- format(as.Date(listings$host_since), "%m/%d/%Y")
+listings$calendar_last_scraped <- format(as.Date(listings$calendar_last_scraped), "%m/%d/%Y")
+listings$first_review <- format(as.Date(listings$first_review), "%m/%d/%Y")
+listings$last_review <- format(as.Date(listings$last_review), "%m/%d/%Y")
+
+# Convert price to numeric
+listings$price <- readr::parse_number(listings$price)
+
+# Replace empty values with NA
+listings[listings == ""] <- NA
+# Replace N/A values with NA
+listings[listings == "N/A"] <- NA
+
+```
+
+```{r}
+readr::parse_number(listings$price)
+```
+
+
+```{r}
+missing_stat <- listings %>%
+    gather(key = "key", value = "val") %>%
+    mutate(isna = is.na(val)) %>%
+    group_by(key) %>%
+    mutate(total = n()) %>%
+    group_by(key, total, isna) %>%
+    summarise(num.isna = n()) %>%
+    mutate(pct = num.isna / total * 100)
+
+levels <-
+    (missing_stat  %>% filter(isna == T) %>% arrange(desc(pct)))$key
+
+percentage.plot <- missing_stat %>%
+      ggplot() +
+        geom_bar(aes(x = reorder(key, desc(pct)), 
+                     y = pct, fill=isna), 
+                 stat = 'identity', alpha=0.8) +
+      scale_x_discrete(limits = levels) +
+      scale_fill_manual(name = "", 
+                        values = c('steelblue', 'tomato3'), labels = c("Present", "Missing")) +
+      coord_flip() +
+      labs(title = "Percentage of missing values", x =
+             'Variable', y = "% of missing values")
+
+percentage.plot
+```
+```{r}
+# Remove unwanted columns
+listings <- listings %>%
+  select(!c(neighbourhood_group_cleansed, calendar_updated , bathrooms))
+```
+
+```{r}
+listings_missing_data[!complete.cases(listings_missing_data),]
+```
+
+```{r}
+unique(listings_missing_data$property_type)
+```
+
+```{r fig.align="center", echo = FALSE,fig.width = 10}
+top_hosts <- listings %>%
+  count(host_id, sort = TRUE, name = "count") %>%
+  slice(1:10)
+
+ggplot(top_hosts, aes(x=reorder(as.factor(host_id), -count), y=count)) + 
+  geom_bar(stat = "identity", width = 0.4) +
+  xlab("Host ID") +
+  ylab("Listings")
+  
+```
+```{r}
+unique(listings$property_type)
+```
+
+```{r}
+listings <- listings %>%
+  mutate(Log1pPrice = log1p(price))
+
+```
+
+```{r fig.align="center", echo = FALSE, fig.height = 10}
+listings %>% 
+  ggplot(aes(x=neighbourhood_cleansed, y=Log1pPrice, fill=neighbourhood_cleansed)) +
+  geom_boxplot(show.legend = FALSE) + coord_flip() 
 ```
 

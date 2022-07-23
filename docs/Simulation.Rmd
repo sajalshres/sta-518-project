@@ -1,0 +1,78 @@
+---
+title: "Simulation"
+author: "Sajal Shrestha"
+date: "7/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Write R programs for simulations from probability models and randomization-based experiments
+
+-   I can write R programs for simulations from probability models
+
+    -   I can apply a function to groupings within a data source.
+    -   I can use common probability distributions to simulate data and explore statistical ideas.
+
+-   I can write R programs for randomization-based experiments
+
+    -   I can apply a function to groupings within a data source.
+    -   I can implement resampling methods to make conclusions about data.
+
+```{r load-package}
+library(tidyverse)
+```
+```{r storms-dataset}
+head(storms)
+```
+
+```{r}
+# Data overview
+
+mean(storms$pressure)
+sd(storms$pressure)
+```
+
+```{r storm-pressure-simulation}
+pressure_samp_1000 <- tibble(
+  values = rnorm(n = 1000, mean = 990, sd = 19)
+)
+pressure_samp_1000$values
+
+```
+
+```{r}
+summary(pressure_samp_1000$values)
+```
+
+```{r}
+ggplot(pressure_samp_1000, aes(x = values)) +
+  geom_histogram(
+    aes(y = ..count.. / sum(..count..)),
+    fill = "white",
+    color = "black",
+    binwidth = 3
+  ) +
+  stat_function(
+    fun = function(x)
+      dnorm(x, mean = 990, sd = 19) * 3,
+    color = "#0065a4",
+    size = 2,
+    alpha = 0.4
+  ) +
+  geom_vline(
+    xintercept = mean(pressure_samp_1000$values),
+    color = "#a43f00",
+    size = 2
+  ) +
+  theme_minimal() +
+  labs(y = "proportion")
+```
+
+```{r}
+ggplot(pressure_samp_1000, aes(y=values)) + 
+  geom_boxplot()
+```
+
