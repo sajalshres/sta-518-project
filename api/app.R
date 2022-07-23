@@ -18,6 +18,7 @@ function(pr) {
 }
 
 root_api %>%
+  pr_set_docs("swagger") %>%
   pr_set_api_spec(function(spec) {
     spec$info <- list(
       title = "Airbnb Analysis API",

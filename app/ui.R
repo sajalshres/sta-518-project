@@ -3,38 +3,44 @@
 # https://rstudio.github.io/shinydashboard
 library(shinydashboard)
 
-# Header for the dashboard
-header <- dashboardHeader(title = "Airbnb Analysis")
+source("components/header.R")
+source("components/sidebar.R")
 
-# Sidebar for the dashboard
-sidebar <- dashboardSidebar(sidebarMenu(
-  menuItem(
-    "Dashboard",
-    tabName = "dashboard",
-    icon = icon("dashboard")
-  ),
-  menuItem("Widgets", tabName = "widgets", icon = icon("th"))
-))
+infoItems <- fluidRow(
+  valueBox(6000, "Listings", icon = icon("building")),
+  valueBox(200, "Hosts", icon = icon("user"), color = "purple"),
+  valueBox(50, "Neighbourhoods", icon = icon("map"), color = "orange"),
+  valueBox(50000, "Reviews", icon = icon("star"), color = "green"),
+)
+
+sampleDashboardItems <- fluidRow(
+  box(plotOutput("plot1", height = 250)),
+  box(
+   title = "Controls",
+   sliderInput("slider", "Number of observations:", 1, 100, 50)
+  )
+)
 
 # Body content of the dashboard
-body <- dashboardBody(tabItems(
-  # First tab content
-  tabItem(tabName = "dashboard",
-          fluidRow(
-            box(plotOutput("plot1", height = 250)),
-            
-            box(
-              title = "Controls",
-              sliderInput("slider", "Number of observations:", 1, 100, 50)
-            )
-          )),
-  
-  # Second tab content
-  tabItem(tabName = "widgets",
-          h2("Widgets tab content"))
-))
+body <- dashboardBody(
+  tabItems(
+    # First tab content
+    tabItem(tabName = "dashboard",
+            infoItems,
+            sampleDashboardItems
+    ),
+    # Second tab content
+    tabItem(
+      tabName = "widgets",
+      h2("Widgets tab content")
+    )
+  )
+)
 
 # UI object that includes all the components
-ui <- dashboardPage(header = header,
-                    sidebar = sidebar,
-                    body = body)
+ui <- dashboardPage(
+  skin = "blue",
+  header = header,
+  sidebar = sidebar,
+  body = body
+)
