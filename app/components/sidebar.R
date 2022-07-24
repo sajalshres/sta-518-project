@@ -5,7 +5,7 @@ sidebar <- dashboardSidebar(sidebarMenu(
   menuItem(
     "Dashboard",
     tabName = "dashboard",
-    icon = icon("dashboard")
+    icon = icon("flipboard")
   ),
-  menuItem("Widgets", tabName = "widgets", icon = icon("th"))
+  menuItem("Data", tabName = "data", icon = icon("table"))
 ))

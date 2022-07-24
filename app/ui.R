@@ -5,36 +5,17 @@ library(shinydashboard)
 
 source("components/header.R")
 source("components/sidebar.R")
-
-infoItems <- fluidRow(
-  valueBox(6000, "Listings", icon = icon("building")),
-  valueBox(200, "Hosts", icon = icon("user"), color = "purple"),
-  valueBox(50, "Neighbourhoods", icon = icon("map"), color = "orange"),
-  valueBox(50000, "Reviews", icon = icon("star"), color = "green"),
-)
-
-sampleDashboardItems <- fluidRow(
-  box(plotOutput("plot1", height = 250)),
-  box(
-   title = "Controls",
-   sliderInput("slider", "Number of observations:", 1, 100, 50)
-  )
-)
+source("views/dashboard.R")
+source("views/data.R")
 
 # Body content of the dashboard
 body <- dashboardBody(
   tabItems(
-    # First tab content
-    tabItem(
-      tabName = "dashboard",
-      infoItems,
-      sampleDashboardItems
-    ),
-    # Second tab content
-    tabItem(
-      tabName = "widgets",
-      h2("Widgets tab content")
-    )
+    # Dashboard tab
+    dashboardItem(),
+    
+    # Data tab
+    dataItem()
   )
 )
 
