@@ -25,9 +25,10 @@ sampleDashboardItems <- fluidRow(
 body <- dashboardBody(
   tabItems(
     # First tab content
-    tabItem(tabName = "dashboard",
-            infoItems,
-            sampleDashboardItems
+    tabItem(
+      tabName = "dashboard",
+      infoItems,
+      sampleDashboardItems
     ),
     # Second tab content
     tabItem(

@@ -1,0 +1,114 @@
+```{r}
+temp_df <- links_df %>%
+  filter(grepl("http://data.insideairbnb.com/united-states", links)) %>%
+  mutate(
+    country = unlist(str_split(links, "/"))[4],
+    state = unlist(str_split(links, "/"))[5],
+    city = unlist(str_split(links, "/"))[6],
+    date = unlist(str_split(links, "/"))[7],
+    file_name = unlist(str_split(links, "/"))[9],
+  )
+```
+
+```{r}
+unique(data$country)
+```
+
+```{r}
+unique(data$state)
+```
+
+```{r}
+unique(data$city)
+```
+
+```{r}
+download_data <- function(link, city) {
+  return(paste("Data downloaded for", city))
+}
+
+data %>%
+  rowwise() %>%
+  mutate(downloaded = download_data(links, city))
+```
+
+
+```{r}
+d_file <- function() {
+  is_downloaded <- TRUE
+  if(file.exists(paste0("../data/raw/","chicago_calendar.csv"))) {
+    return(is_downloaded)
+  }
+  tryCatch(
+    download.file(
+      "http://data.insideairbnb.com/united-states/ca/los-angeles/2022-06-06/data/lsssistings.csv.gz", 
+      paste0("../data/raw/","lost_angeles_listings.csv.gz")
+    ),
+    error = function(error) {
+      print(paste0("Error occurred when downloading file. reason: ", error))
+      is_downloaded <<- FALSE
+    }
+  )
+  print(paste("is_downloaded", is_downloaded))
+  return(is_downloaded)
+}
+
+d_file()
+
+```
+
+```{r}
+download_data <- function(link, city_name, file_name) {
+  # result flag
+  is_downloaded <- TRUE
+  
+  dest_file <- paste0("../data/raw/", paste0(city_name, "_", file_name))
+  
+  tryCatch(
+    #download.file(link, dest_file),
+    print(paste0(city_name, "_", file_name)),
+    # handle error
+    error = function(error) {
+      print(paste0("Error occurred when downloading file. reason: ", error))
+      is_downloaded <<- FALSE
+    }
+  )
+  
+  return(is_downloaded)
+}
+```
+
+```{r}
+data %>%
+  rowwise() %>%
+  mutate(downloaded = download_data(links, city_name = city, file_name = file_name))
+```
+
+
+```{r}
+file.exists(paste0("../data/raw/","chicago_calendar.csv"))
+```
+
+```{r}
+res <- saveRDS(data, "../data/processed/scrape_result.Rds")
+```
+
+```{r}
+scrape_data <- readRDS("../data/processed/scrape_data.Rds")
+```
+
+
+```{r}
+scrape_data %>%
+  group_by(state) %>%
+  summarise_each(funs(n_distinct))
+```
+
+```{r}
+chicago_reviews <- readr::read_csv("../data/raw/chicago_reviews.csv.gz")
+```
+```{r}
+chicago_reviews %>%
+  drop_na()
+```
+
