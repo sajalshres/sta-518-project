@@ -1,13 +1,15 @@
-
+library(DT)
 library(shinydashboard)
 
-titleItem <- fluidRow(h2("Raw Data"))
+dataItems <- fluidRow(
+  box(dataTableOutput("dataTableListings"), width = 12)
+)
 
 dataItem <- function() {
   return(
     tabItem(
       tabName = "data",
-      titleItem
+      dataItems
     )
   )
 }

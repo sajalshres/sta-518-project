@@ -1,6 +1,7 @@
 ## ui.R ##
 
 # https://rstudio.github.io/shinydashboard
+library(leaflet)
 library(shinydashboard)
 
 source("components/header.R")

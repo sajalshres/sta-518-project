@@ -1,11 +1,21 @@
 ## sidebar.R ##
 
 # Sidebar for the dashboard
-sidebar <- dashboardSidebar(sidebarMenu(
-  menuItem(
-    "Dashboard",
-    tabName = "dashboard",
-    icon = icon("flipboard")
+sidebar <- dashboardSidebar(
+  selectInput(
+    "city",
+    NULL,
+    c(
+      "Chicago" = "chicago",
+      "New York" = "new-york"
+    )
   ),
-  menuItem("Data", tabName = "data", icon = icon("table"))
-))
+  sidebarMenu(
+    menuItem(
+      "Dashboard",
+      tabName = "dashboard",
+      icon = icon("flipboard")
+    ),
+    menuItem("Data", tabName = "data", icon = icon("table"))
+  )
+)

@@ -18,9 +18,7 @@ library(tidyverse)
 ```
 
 ```{r}
-listings <- readr::read_csv("../data/raw/chicago_listings.csv")
-head(listings)
-
+listings <- readr::read_csv("../data/raw/chicago_listings.csv.gz")
 ```
 
 ```{r}
