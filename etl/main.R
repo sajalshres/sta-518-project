@@ -2,14 +2,14 @@
 
 library(tidyverse)
 
-# Read modules
+## Read modules
 source("modules/scrape.R")
 
 # Global variables
 data_dir <- "data"
 
-process_listings <- function() {
-  listings <- readr::read_csv("data/raw/chicago_listings.csv.gz")
+process_listings <- function(file_path) {
+  listings <- readr::read_csv(file_path)
   
   # Remove unwanted columns
   listings <- listings %>%
@@ -60,14 +60,14 @@ process_listings <- function() {
 
   listings <- listings %>%
     filter(
-      host_location == "Chicago, Illinois, United States"
+      host_location == names(which.max(table(host_location)))
     )
   
   return(listings)
 }
 
-process_reviews <- function() {
-  reviews <- readr::read_csv("data/raw/chicago_reviews.csv.gz")
+process_reviews <- function(file_path) {
+  reviews <- readr::read_csv(file_path)
   
   # drop na
   reviews %>%
@@ -79,15 +79,24 @@ process_reviews <- function() {
 
 # Start Process
 start_process <- function() {
+  # Scrape the data
   scrape_info <- start_scrape()
   
   # save scrape
   saveRDS(scrape_info, "data/processed/scrape_info.Rds")
   
-  # process only for chicago for now.
-  listings <- process_listings()
-  reviews <- process_reviews()
-  save(listings, reviews, file = "data/processed/chicago.Rda")
+  for(city in unique(scrape_info$city)) {
+    print(paste("Processing for", city))
+    # Process listings
+    listings <- process_listings(file_path = paste0("data/raw/", city, "_listings.csv.gz"))
+    # Save listings data
+    saveRDS(listings, paste0("data/processed/", city, "_listings.Rds"))
+    
+    # Process reviews
+    reviews <- process_reviews(file_path = paste0("data/raw/", city, "_reviews.csv.gz"))
+    # Save reviews data
+    saveRDS(reviews, paste0("data/processed/", city, "_reviews.Rds"))
+  }
 }
 
 start_process()

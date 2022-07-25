@@ -146,4 +146,15 @@ listings %>%
   ggplot(aes(x=price_log1p, fill=room_type)) +
   geom_density(alpha = 0.5)
 ```
+```{r}
+for(city in unique(scrape_info$city)) {
+  print(city)
+}
+```
+
+```{r}
+for(city in unique(scrape_info$city)) {
+  print(city)
+}
+```
 

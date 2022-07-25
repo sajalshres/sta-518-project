@@ -1,10 +1,10 @@
 library(shinydashboard)
 
 infoItems <- fluidRow(
-  valueBox(6000, "Listings", icon = icon("building"), width = 3),
-  valueBox(200, "Hosts", icon = icon("user"), color = "purple", width = 3),
-  valueBox(50, "Neighbourhoods", icon = icon("map"), color = "orange", width = 3),
-  valueBox(50000, "Reviews", icon = icon("star"), color = "green", width = 3),
+  valueBoxOutput("valueBoxListings", width = 3),
+  valueBoxOutput("valueBoxHosts", width = 3),
+  valueBoxOutput("valueBoxNeighbourhoods", width = 3),
+  valueBoxOutput("valueBoxReviews", width = 3),
 )
 
 sampleDashboardItems <- fluidRow(
