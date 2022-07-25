@@ -1,5 +1,5 @@
 ## maps.R ##
-
+library(tidyverse)
 library(leaflet)
 
 mapsListingsPrice <- function(listings) {

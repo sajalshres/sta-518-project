@@ -2,8 +2,8 @@
 
 library(tidyverse)
 
-# Read scripts
-source("scripts/scrape.R")
+# Read modules
+source("modules/scrape.R")
 
 # Global variables
 data_dir <- "data"
@@ -85,9 +85,9 @@ start_process <- function() {
   saveRDS(scrape_info, "data/processed/scrape_info.Rds")
   
   # process only for chicago for now.
-  chicago_listings <- process_listings()
-  chicago_reviews <- process_reviews()
-  save(chicago_listings, chicago_reviews, file = "data/processed/chicago.Rda")
+  listings <- process_listings()
+  reviews <- process_reviews()
+  save(listings, reviews, file = "data/processed/chicago.Rda")
 }
 
 start_process()

@@ -39,7 +39,7 @@ vignettes/*.pdf
 .Renviron
 
 # Data
-data/
+data/raw/
 
 # Misc
 .DS_Store

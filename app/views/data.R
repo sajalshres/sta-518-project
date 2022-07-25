@@ -1,15 +1,20 @@
 library(DT)
 library(shinydashboard)
 
-dataItems <- fluidRow(
-  box(dataTableOutput("dataTableListings"), width = 12)
+listingItem <- fluidRow(
+  box(dataTableOutput("dataTableListings"), title = "Listings Data", width = 12)
+)
+
+hostItem <- fluidRow(
+  box(dataTableOutput("dataTableHosts"), title = "Hosts Data", width = 12)
 )
 
 dataItem <- function() {
   return(
     tabItem(
       tabName = "data",
-      dataItems
+      listingItem,
+      hostItem
     )
   )
 }

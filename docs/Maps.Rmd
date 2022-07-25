@@ -139,10 +139,11 @@ leaflet(data = map_data) %>%
 
 
 ```{r}
-paste0(
-  "<p>", "Name:", "Hello","</p",
-  "<p>", "Name:", "Hello","</p",
-  collapse = 
-)
+unique(listings$room_type)
+
+listings %>%
+  mutate(price_log1p = log1p(price)) %>%
+  ggplot(aes(x=price_log1p, fill=room_type)) +
+  geom_density(alpha = 0.5)
 ```
 
