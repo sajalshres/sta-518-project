@@ -1,11 +1,14 @@
 ## ui.R ##
 
-# https://rstudio.github.io/shinydashboard
+# https://rstudio.github.io/leaflet/
 library(leaflet)
+# https://rstudio.github.io/shinydashboard
 library(shinydashboard)
 
+## Read components
 source("components/header.R")
 source("components/sidebar.R")
+## Read views
 source("views/dashboard.R")
 source("views/data.R")
 

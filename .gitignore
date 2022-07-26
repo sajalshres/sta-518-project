@@ -41,6 +41,7 @@ vignettes/*.pdf
 # Data
 data/
 app/data
+api/data
 
 # Rsconnet
 rsconnect/
