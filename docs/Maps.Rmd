@@ -153,8 +153,31 @@ for(city in unique(scrape_info$city)) {
 ```
 
 ```{r}
-for(city in unique(scrape_info$city)) {
-  print(city)
+get_page_info <- function(row_count, page = 1) {
+  page_size <- 1000
+  page_start <- 1
+  page_end <- 1000
+  
+  total_pages <- ceiling(row_count / page_size)
+  
+  if(page == 1) {
+    return(list(start = page, end = page * page_size))
+  }
+  if(page == total_pages) {
+    print("Last page")
+  }
+  return(list(start = (page - 1) * page_size + 1, end = page * page_size))
 }
+
+for(i in 1:21) {
+  res <- get_page_info(row_count = 20333, page = i)
+  print(paste(res$start, res$end))
+}
+```
+
+```{r}
+1:1000 #1
+1001:2000 #2
+2001:3000 #3
 ```
 

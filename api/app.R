@@ -5,12 +5,17 @@ library(plumber)
 #* @apiDescription A rest api service for Airbnb data
 
 
+# Root api object to mount all the routes
 root_api <- pr()
+# Utils api object that provides utility routes
 utils_api <- pr("routes/utils.R")
+# Data api object that provides data routes
 data_api <- pr("routes/data.R")
 
 root_api %>%
+  # Set documentation function as swagger. Another alternative is redoc
   pr_set_docs("swagger") %>%
+  # Set api specifications and info such as title, description
   pr_set_api_spec(function(spec) {
     spec$info <- list(
       title = "Airbnb Analysis API",
@@ -32,6 +37,9 @@ root_api %>%
   }) %>%
   # set default serializer to return unboxed JSON
   pr_set_serializer(serializer_unboxed_json()) %>%
+  # mount utils routes
   pr_mount("/utils", utils_api) %>%
+  # mount data routes
   pr_mount("/data", data_api) %>%
+  # run the server
   pr_run(host = "127.0.0.1", port = 8000)
