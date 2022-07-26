@@ -90,12 +90,12 @@ start_process <- function() {
     # Process listings
     listings <- process_listings(file_path = paste0("data/raw/", city, "_listings.csv.gz"))
     # Save listings data
-    saveRDS(listings, paste0("data/processed/", city, "_listings.Rds"))
+    saveRDS(listings, paste0("data/processed/", city, "_listings.Rds"), compress = TRUE)
     
     # Process reviews
     reviews <- process_reviews(file_path = paste0("data/raw/", city, "_reviews.csv.gz"))
     # Save reviews data
-    saveRDS(reviews, paste0("data/processed/", city, "_reviews.Rds"))
+    saveRDS(reviews, paste0("data/processed/", city, "_reviews.Rds"), compress = TRUE)
   }
 }
 

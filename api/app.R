@@ -9,14 +9,6 @@ root_api <- pr()
 utils_api <- pr("routes/utils.R")
 data_api <- pr("routes/data.R")
 
-# Override the base Plumber api
-#* @plumber
-function(pr) {
-  pr %>%
-    # Overwrite the default serializer to return unboxed JSON
-    pr_set_serializer(serializer_unboxed_json())
-}
-
 root_api %>%
   pr_set_docs("swagger") %>%
   pr_set_api_spec(function(spec) {
@@ -38,6 +30,8 @@ root_api %>%
       )
     spec
   }) %>%
+  # set default serializer to return unboxed JSON
+  pr_set_serializer(serializer_unboxed_json()) %>%
   pr_mount("/utils", utils_api) %>%
   pr_mount("/data", data_api) %>%
   pr_run(host = "127.0.0.1", port = 8000)

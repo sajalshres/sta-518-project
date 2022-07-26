@@ -9,11 +9,13 @@ library(shinydashboard)
 source("ui.R")
 source("modules/maps.R")
 
+# Dynamically load listings data for reactivity
 loadListingsData <- function(city) {
  listings <- readRDS(paste0("data/processed/", city, "_listings.Rds"))
  return(listings)
 }
 
+# Dynamically load reviews data for reactivity
 loadReviewsData <- function(city) {
   reviews <- readRDS(paste0("data/processed/", city, "_reviews.Rds"))
   return(reviews)
