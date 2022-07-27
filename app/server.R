@@ -9,6 +9,9 @@ library(shiny)
 # https://rstudio.github.io/shinydashboard
 library(shinydashboard)
 
+# Read modules
+source("modules/maps.R")
+
 # Dynamically load listings data for reactivity
 loadListingsData <- function(city) {
   listings <- readRDS(paste0("data/processed/", city, "_listings.Rds"))
