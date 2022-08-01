@@ -336,7 +336,14 @@ expensive_neighbourhoods %>%
 ```
 
 ```{r}
-listings %>%
-  summarise(avg_price = mean(price), count = n(), hosts = n_distinct(host_id), neighbourhoods = n_distinct(neighbourhood))
+temp <- listings %>%
+  summarise(
+    avg_price = mean(price),
+    count = n(),
+    hosts = n_distinct(host_id),
+    neighbourhoods = n_distinct(neighbourhood)
+  )
+
+as.list(temp[1,])
 ```
 

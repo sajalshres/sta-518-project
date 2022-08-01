@@ -19,7 +19,35 @@ get_cities <- function(res) {
 #* @param city Name of the city
 #* @tag data
 get_summary <- function(res, city = "chicago") {
-  return(list(status = "TODO, implement in future"))
+  # Read listing object by city
+  listings <-
+    readRDS(paste0("data/", city, "_listings.Rds"))
+  
+  # Read reviews object by city
+  reviews <-
+    readRDS(paste0("data/", city, "_reviews.Rds"))
+  
+  # Summarize listings data
+  listings_summary <- listings %>%
+    summarise(
+      listings = n(),
+      avg_price = mean(price),
+      hosts = n_distinct(host_id),
+      neighbourhoods = n_distinct(neighbourhood)
+    )
+  
+  # Summarize reviews data
+  reviews_summary <- reviews %>%
+    summarise(
+      reviews = n()
+    )
+  
+  # Combine summary
+  summary <-
+    append(as.list(listings_summary[1,]), as.list(reviews_summary[1,]))
+  
+  
+  return(summary)
 }
 
 #* Get the Airbnb listings data for requested city
