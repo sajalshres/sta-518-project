@@ -1,11 +1,11 @@
 ## data.R ##
 
 listingItem <- fluidRow(
-  box(dataTableOutput("dataTableListings"), title = "Listings Data", width = 12)
+  box(DT::dataTableOutput("dataTableListings"), title = "Listings Data", width = 12)
 )
 
 hostItem <- fluidRow(
-  box(dataTableOutput("dataTableHosts"), title = "Hosts Data", width = 12)
+  box(DT::dataTableOutput("dataTableHosts"), title = "Hosts Data", width = 12)
 )
 
 dataItem <- function() {

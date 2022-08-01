@@ -78,45 +78,7 @@ server <- function(input, output) {
     anaylzeNeighbourhoodsByPrice(listings(), order = order, limit = input$neighbourhoodCountInputId)
   })
   
-  output$analyzeNeighbourhoodUI <- renderUI({
-    div(
-      class = "box",
-      style = "position: relative",
-      div(
-        style = "position: absolute; right: 0.2em; top: 0.5em;",
-        dropdown(
-          pickerInput(
-            inputId = "neighbourhoodPriceInputId",
-            choices = c("Most Expensive", "Least Expensive"),
-            choicesOpt = list(
-              icon = c(
-                "glyphicon glyphicon-arrow-up",
-                "glyphicon glyphicon-arrow-down"
-              )
-            ),
-            width = "100%",
-            inline = TRUE
-          ),
-          sliderInput(
-            inputId = 'neighbourhoodCountInputId',
-            label = 'Neighbourhood Count',
-            min = 5,
-            max = 20,
-            value = 10,
-            step = 5
-          ),
-          circle = FALSE,
-          icon = icon("gear"),
-          width = "300px",
-          tooltip = tooltipOptions(title = "Filter neighbourhood data"),
-          right = TRUE
-        )
-      ),
-      plotOutput("analyzeNeighbourhoodByPricePlot", height = 520)
-    )
-  })
-  
-  output$dataTableListings <- renderDataTable({
+  output$dataTableListings <- DT::renderDataTable({
     listings() %>%
       select(id,
              name,
@@ -129,7 +91,7 @@ server <- function(input, output) {
              price)
   })
   
-  output$dataTableHosts <- renderDataTable({
+  output$dataTableHosts <- DT::renderDataTable({
     listings() %>%
       select(
         id,
@@ -142,5 +104,7 @@ server <- function(input, output) {
         host_is_superhost
       ) %>%
       distinct(host_id, .keep_all = TRUE)
-  })
+  },
+  server = FALSE
+  )
 }

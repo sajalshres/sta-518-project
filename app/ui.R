@@ -9,6 +9,10 @@ library(shiny)
 library(shinydashboard)
 # https://github.com/dreamRs/shinyWidgets
 library(shinyWidgets)
+# https://github.com/RinteRface/shinydashboardPlus
+library(shinydashboardPlus)
+# https://github.com/JohnCoene/waiter
+library(waiter)
 # https://rstudio.github.io/leaflet/
 library(leaflet)
 
@@ -37,8 +41,10 @@ tabItems(# Dashboard tab
 
 # UI object that includes all the components
 ui <- dashboardPage(
-  skin = "blue",
+  md = FALSE,
+  skin = "blue-light",
+  preloader = list(html = tagList(spin_5(), "Loading app ..."), color = "#3c8dbc"),
   header = header,
   sidebar = sidebar,
-  body = body
+  body = body,
 )

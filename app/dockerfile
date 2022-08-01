@@ -17,6 +17,9 @@ RUN apt-get update && apt install -y --no-install-recommends \
 RUN R -e 'install.packages(c(\
               "shiny", \
               "shinydashboard", \
+              "shinyWidgets", \
+              "shinydashboardPlus", \
+              "waiter", \
               "plumber", \
               "DT", \
               "leaflet", \

@@ -10,9 +10,44 @@ infoItems <- fluidRow(
 mapItems <- fluidRow(box(leafletOutput("mapPrice")))
 
 anaylzeItems <-
-  fluidRow(box(plotOutput("analyzeTopHostsPlot", height = 500)),
-           column(width = 6,
-                  uiOutput("analyzeNeighbourhoodUI")), )
+  fluidRow(
+    box(
+      title = "Top Hosts",
+      plotOutput("analyzeTopHostsPlot", height = 500)
+    ),
+    box(
+      title = "Top Hosts",
+      sidebar = boxSidebar(
+        id = "mycardsidebar",
+        width = 40,
+        pickerInput(
+          inputId = "neighbourhoodPriceInputId",
+          choices = c("Most Expensive", "Least Expensive"),
+          choicesOpt = list(
+            icon = c(
+              "glyphicon glyphicon-arrow-up",
+              "glyphicon glyphicon-arrow-down"
+            )
+          ),
+          width = "98%",
+          inline = TRUE
+        ),
+        sliderInput(
+          inputId = 'neighbourhoodCountInputId',
+          label = 'Neighbourhood Count',
+          min = 5,
+          max = 20,
+          value = 10,
+          step = 5
+        )
+      ),
+      plotOutput("analyzeNeighbourhoodByPricePlot", height = 520)
+    ),
+    column(
+      width = 6,
+      uiOutput("analyzeNeighbourhoodUI")
+    )
+)
 
 sampleDashboardItems <-
   fluidRow(box(plotOutput("plot1", height = 400)),
