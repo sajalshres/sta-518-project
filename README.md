@@ -1,28 +1,74 @@
 # Analysis of Airbnb listings
 
+<p style='color:red'><b>NOTE</b>: Work In Progress. ETA: 08/08/2022</p>
+
 ## Introduction
 
-Airbnb is an online marketplace that allows millions of people to rent their homes/apartments on a short-term basis to visitors. It provides a medium that connects over 4 million hosts and tourists. I want to explore how Airbnb empowers residential communities and understand the platform, customers, host behavior, and famous neighborhoods.
+![App Demo](./docs/images/app-demo.gif)
 
-I want to develop a web application that provides an interactive dashboard containing visualizations to gain insights about Airbnb using the Airbnb dataset in the USA. I also plan to create an API allowing everyone, including students, analysts, and developers, to quickly fetch the data and use it to perform some analysis.
+[app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com) is a web application that provides an interactive dashboard containing visualizations and summaries to gain insights about Airbnb using the Airbnb dataset for the USA.
 
-## Objectives
+Application is live at:
 
-- To analyze and compare the neighborhoods with their prices.
-- To identify various types of properties available in the city.
-- To visualize listing on a map based on attributes like price, reviews, and property types.
-- To find the most used words used in top listings and reviews
+- **Web Application**: [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com)
 
-## About Dataset
+- **API Application**: [api-airbnb.sajalshres.com](https://api-airbnb.sajalshres.com)
 
-[Inside Airbnb](http://insideairbnb.com) is a website that provides data regarding listings, calendars, reviews, and neighborhood details of various regions throughout the world. I want to limit the data to the United States and focus my examples on Chicago, Illinois, as it is very close to Grand Rapids, and I would love to visit it someday.
+**Note**: If you are having issues with [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com), please visit [https://sajalshres.shinyapps.io/airbnb-analysis/](https://sajalshres.shinyapps.io/airbnb-analysis/)
 
-Sample dataset for Chicago, Illinois:
+## Proposal
 
-- Listing Data: [listings.csv.gz](http://data.insideairbnb.com/united-states/il/chicago/2022-03-17/data/listings.csv.gz)
-- Calendar Data: [calendar.csv.gz](http://data.insideairbnb.com/united-states/il/chicago/2022-03-17/data/calendar.csv.gz)
-- Reviews: [reviews.csv](http://data.insideairbnb.com/united-states/il/chicago/2022-03-17/data/reviews.csv.gz)
-- Neighbourhoods: [neighbourhoods.csv](http://data.insideairbnb.com/united-states/il/chicago/2022-03-17/visualisations/neighbourhoods.csv)
-- Neighbourhoods GeoJSON: [neighbourhoods.geojson](http://data.insideairbnb.com/united-states/il/chicago/2022-03-17/visualisations/neighbourhoods.geojson)
+Please visit [proposal document](./docs/proposal.md) for more details on proposal.
 
-More details: [insideairbnb.com](http://insideairbnb.com)
+## Folder Structure
+
+```
+sta-518-project
+|
+|--api        # API application to fetch raw data, analaysis and summaries.
+|--app        # Shiny web appliation containing interactive dashboard.
+|--data       # Contains raw and processed data
+|--docs       # Contains documentation and rmarkdown notebooks.
+|--etl        # ETL cli application to scrape and process the data for analysis.
+|--modules    # Shared modules used by scripts and applications.
+|--scripts    # Contains rscripts.
+```
+
+## Setup
+
+- Install required packages
+
+  ```bash
+  Rscript scripts/setup.R
+  ```
+
+- Run etl cli tool to scrape the raw data and process them.
+
+  ```bash
+  Rscript etl/main.R
+  ```
+  
+- Run web application
+
+  ```bash
+  Rscipt scripts/start_app.R --app-dir app --host 127.0.0.1 --port 3000
+  ```
+
+- Run api application
+
+  ```bash
+  Rscript scripts/start_api.R --app-dir app
+  ```
+- Launch your favorite browser and visit `http://localhost:3000` to view web application.
+
+<p align="center">
+  <img src="./docs/images/app-screenshot.png" alt="App Screenshot" width="800"/>
+</p>
+
+
+- Launch your favorite browser and visit `http://localhost:8000/__docs__/` to view api application.
+
+<p align="center">
+  <img src="./docs/images/api-screenshot.png" alt="Api Screenshot" width="800"/>
+</p>
+
