@@ -36,37 +36,37 @@ sta-518-project
 
 ## Setup
 
-- Install required packages
+1. Install required packages
 
   ```bash
   Rscript scripts/setup.R
   ```
 
-- Run etl cli tool to scrape the raw data and process them.
+2. Run etl cli tool to scrape the raw data and process them.
 
   ```bash
   Rscript etl/main.R
   ```
   
-- Run web application
+3. Run web application
 
   ```bash
   Rscipt scripts/start_app.R --app-dir app --host 127.0.0.1 --port 3000
   ```
 
-- Run api application
+4. Run api application
 
   ```bash
   Rscript scripts/start_api.R --app-dir app
   ```
-- Launch your favorite browser and visit `http://localhost:3000` to view web application.
+5. Launch your favorite browser and visit `http://localhost:3000` to view web application.
 
 <p align="center">
   <img src="./docs/images/app-screenshot.png" alt="App Screenshot" width="800"/>
 </p>
 
 
-- Launch your favorite browser and visit `http://localhost:8000/__docs__/` to view api application.
+6. Launch your favorite browser and visit `http://localhost:8000/__docs__/` to view api application.
 
 <p align="center">
   <img src="./docs/images/api-screenshot.png" alt="Api Screenshot" width="800"/>
