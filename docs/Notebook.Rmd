@@ -1,0 +1,342 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+## Setup
+
+```{r load-package, message=FALSE}
+library(tidyverse)
+library(leaflet)
+library(geojsonio)
+library(RColorBrewer)
+library(htmltools)
+```
+
+```{r load-data}
+listings <- readr::read_csv("../data/raw/chicago_listings.csv.gz")
+```
+
+```{r manage-clean-data}
+# Remove unwanted columns
+listings <- listings %>%
+  select(
+    id,
+    name,
+    description,
+    host_id,
+    host_name,
+    host_since,
+    host_location,
+    host_about,
+    host_response_time,
+    host_response_rate,
+    host_acceptance_rate,
+    host_is_superhost,
+    host_neighbourhood,
+    host_verifications,
+    host_identity_verified,
+    host_has_profile_pic,
+    neighbourhood_cleansed,
+    latitude,
+    longitude,
+    property_type,
+    room_type,
+    accommodates,
+    bathrooms_text,
+    bedrooms,
+    beds,
+    price
+  ) %>%
+  mutate(host_since = format(as.Date(host_since), "%m/%d/%Y"),
+         .after = host_name) %>%
+  mutate(bathrooms = parse_number(str_extract(bathrooms_text, "\\d*\\.?\\d+")), .after = beds) %>%
+  mutate(price = parse_number(price),) %>%
+  select(!bathrooms_text) %>%
+  rename(neighbourhood = neighbourhood_cleansed)
+
+# Replace empty values with NA
+listings[listings == ""] <- NA
+
+# Replace N/A values with NA
+listings[listings == "N/A"] <- NA
+
+# Drop rows with NA in id, name
+listings <- listings %>%
+  drop_na(c("id", "name", "host_id", "host_name", "host_location", "host_neighbourhood"))
+
+listings <- listings %>%
+  filter(
+    host_location == "Chicago, Illinois, United States"
+  )
+```
+
+```{r}
+leaflet(listings) %>%
+  addTiles() %>%
+  addMarkers(
+    ~longitude,
+    ~latitude,
+    labelOptions = labelOptions(noHide = F),
+    clusterOptions = markerClusterOptions(),
+  ) %>%
+  setView(-87.7, 41.9, zoom = 12) %>%
+  addProviderTiles("OpenStreetMap")
+```
+
+
+```{r map-listings-price}
+
+generate_label <- function(name, price) {
+  return (
+    paste0(
+      "<p>", name, "</p>",
+      "<p>", price, "</p>",
+    )
+  )
+}
+
+# setup data
+map_data <- listings %>%
+  select(id, name, host_name, latitude, longitude, neighbourhood, price) %>%
+  rowwise() %>%
+  # get more accurate result
+  mutate(
+    price_log1p = log1p(price),
+  )
+
+pal <-
+  colorNumeric("RdYlBu", domain = map_data$price_log1p, reverse = TRUE)
+
+# render map
+leaflet(data = map_data) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(
+    ~ longitude,
+    ~ latitude,
+    color = ~ pal(price_log1p),
+    weight = 1,
+    radius = 2,
+    fillOpacity = 1,
+    opacity = 1,
+    label = lapply(
+      paste0(
+        paste0("<P>Name: ",  map_data$name, "</P>"),
+        paste0("<P>Host: ",  map_data$host_name, "</P>"),
+        paste0("<P>Price: ",  map_data$price, "</P>")
+      ), 
+      htmltools::HTML
+    )
+  ) %>%
+  addLegend(
+    "bottomright",
+    pal = pal,
+    values = ~ price_log1p,
+    title = "Price",
+    opacity = 1,
+  ) %>%
+  setView(mean(map_data$longitude), mean(map_data$latitude), zoom = 12)
+```
+
+```{r}
+map_data <- listings %>%
+  select(id, name, host_name, latitude, longitude, neighbourhood, price, room_type) %>%
+  rowwise() %>%
+  # get more accurate result
+  mutate(
+    price_log1p = log1p(price),
+  )
+
+pal <-
+  colorFactor("RdYlBu", domain = map_data$room_type, reverse = TRUE)
+
+# render map
+leaflet(data = map_data) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(
+    ~ longitude,
+    ~ latitude,
+    color = ~ pal(room_type),
+    weight = 1,
+    radius = 2,
+    fillOpacity = 1,
+    opacity = 1,
+    label = lapply(
+      paste0(
+        paste0("<P>Name: ",  map_data$name, "</P>"),
+        paste0("<P>Host: ",  map_data$host_name, "</P>"),
+        paste0("<P>Price: ",  map_data$price, "</P>")
+      ), 
+      htmltools::HTML
+    )
+  ) %>%
+  addLegend(
+    "bottomright",
+    pal = pal,
+    values = ~ room_type,
+    title = "Price",
+    opacity = 1,
+  ) %>%
+  setView(mean(map_data$longitude), mean(map_data$latitude), zoom = 12)
+```
+
+
+
+```{r}
+listings %>%
+  mutate(price_log1p = log1p(price)) %>%
+  ggplot(aes(x=price_log1p, fill=room_type)) +
+  geom_density(alpha = 0.5)
+```
+
+
+```{r}
+listings %>%
+  count(room_type, sort = TRUE, name = "count") 
+```
+
+
+
+```{r}
+listings %>%
+  count(room_type, sort = TRUE, name = "count") %>%
+  ggplot(aes(x = "", y = count, fill = reorder(room_type, -count))) +
+  geom_bar(stat = "identity",
+           width = 1,
+           color = "white") +
+  coord_polar("y", start = 0) +
+  guides(fill=guide_legend(title="Room Type")) +
+  theme_void()
+
+```
+
+```{r}
+get_page_info <- function(row_count, page = 1) {
+  page_size <- 1000
+  page_start <- 1
+  page_end <- 1000
+  
+  total_pages <- ceiling(row_count / page_size)
+  
+  if(page == 1) {
+    return(list(start = page, end = page * page_size))
+  }
+  if(page == total_pages) {
+    print("Last page")
+  }
+  return(list(start = (page - 1) * page_size + 1, end = page * page_size))
+}
+
+for(i in 1:21) {
+  res <- get_page_info(row_count = 20333, page = i)
+  print(paste(res$start, res$end))
+}
+```
+
+```{r}
+top_hosts <- listings %>%
+  count(host_id, sort = TRUE, name = "count") %>%
+  slice(1:10)
+
+ggplot(top_hosts, aes(x=reorder(as.factor(host_id), -count), y=count)) + 
+  geom_bar(stat = "identity", width = 0.4) +
+  xlab("Host ID") +
+  ylab("Listings") +
+  coord_flip() 
+```
+
+```{r}
+listings %>% 
+  mutate(price_log1p = log1p(price)) %>%
+  ggplot(aes(x=neighbourhood, y=price_log1p, fill=neighbourhood)) +
+  geom_boxplot(show.legend = FALSE) + coord_flip() 
+```
+## Most expensive neighbourhoods
+
+```{r}
+top_10_neighbourhood <- aggregate(list(listings$price), list(listings$neighbourhood), FUN = mean)
+colnames(top_10_neighbourhood) <- c("neighbourhood", "Average_price_per_neighborhood")
+top_10_neighbourhood <- top_10_neighbourhood[order(top_10_neighbourhood$Average_price_per_neighborhood),]
+top_10_neighbourhood <- tail(top_10_neighbourhood, 12)
+top_10_neighbourhood <- head(top_10_neighbourhood, 10)
+r <- c()
+for(i in 10:1){r <- c(r, i)}
+row.names(top_10_neighbourhood) <- r
+top_10_neighbourhood
+
+```
+```{r}
+expensive_neighbourhoods <- listings %>%
+  select(neighbourhood, price) %>%
+  group_by(neighbourhood) %>%
+  summarise(average_price = mean(price)) %>%
+  arrange(desc(average_price))
+
+expensive_neighbourhoods %>%
+  slice(1:10)
+```
+
+```{r}
+expensive_neighbourhoods %>%
+  slice(1:10) %>%
+  ggplot(mapping = aes(x = neighbourhood, y = average_price)) +
+  geom_bar(
+    stat = "identity",
+    mapping = aes(fill = neighbourhood, color = neighbourhood),
+    alpha = .8,
+    size = 1.5
+  ) +
+  coord_flip() +
+  coord_polar()
+```
+```{r}
+cheapest_neighbourhoods <- listings %>%
+  select(neighbourhood, price) %>%
+  group_by(neighbourhood) %>%
+  summarise(average_price = mean(price)) %>%
+  arrange(average_price)
+
+cheapest_neighbourhoods %>%
+  slice(1:10)
+```
+
+
+```{r}
+cheapest_neighbourhoods %>%
+  slice(1:10) %>%
+  ggplot(mapping = aes(x = neighbourhood, y = average_price)) +
+  geom_bar(
+    stat = "identity",
+    mapping = aes(fill = neighbourhood, color = neighbourhood),
+    alpha = .8,
+    size = 1.5
+  ) +
+  coord_flip() +
+  coord_polar()
+
+```
+
+
+
+```{r}
+tema1 <- theme(
+              plot.title = element_text(size = 23, hjust = .5),
+              axis.text.x = element_text(size = 13, face = "bold"),
+              axis.text.y = element_text(size = 13, face = "bold"),
+              axis.title.x = element_text(size = 11),
+              axis.title.y = element_text(size = 11),
+              legend.position="none")
+
+expensive_neighbourhoods %>%
+  slice(1:10) %>%
+  ggplot(mapping = aes(x = neighbourhood, y = average_price)) +
+  geom_bar(stat = "identity", mapping = aes(fill = neighbourhood, color = neighbourhood), alpha = .8, size = 1.5) +
+  geom_label(mapping = aes(label = round(average_price, 2)), size = 6, fill = "#F5FFFA", fontface = "bold") +
+  coord_flip() +
+  tema1 
+```
+
+```{r}
+listings %>%
+  summarise(avg_price = mean(price), count = n(), hosts = n_distinct(host_id), neighbourhoods = n_distinct(neighbourhood))
+```
+

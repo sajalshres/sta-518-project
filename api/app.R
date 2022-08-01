@@ -42,4 +42,4 @@ root_api %>%
   # mount data routes
   pr_mount("/data", data_api) %>%
   # run the server
-  pr_run(host = "127.0.0.1", port = 8000)
+  pr_run(host = "0.0.0.0", port = 8000)

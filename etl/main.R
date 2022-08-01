@@ -1,5 +1,5 @@
 ## main.R ##
-
+library(argparse)
 library(tidyverse)
 
 ## Read modules
@@ -7,6 +7,19 @@ source("modules/scrape.R")
 
 # Global variables
 data_dir <- "data"
+
+parse_arguments <- function() {
+  parser <- ArgumentParser(description = 'Process Airbnb dataset')
+  
+  parser$add_argument('--cities',
+                      default = "chicago",
+                      help = "City codes")
+  
+  args <- parser$parse_args()
+  
+  return(args)
+}
+
 
 process_listings <- function(file_path) {
   listings <- readr::read_csv(file_path)

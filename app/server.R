@@ -1,26 +1,18 @@
 ## server.R ##
 
-# https://rstudio.github.io/DT/
-library(DT)
-library(tidyverse)
-
-# https://shiny.rstudio.com/articles/basics.html
-library(shiny)
-# https://rstudio.github.io/shinydashboard
-library(shinydashboard)
-
 # Read modules
 source("modules/maps.R")
+source("modules/analyze.R")
 
 # Dynamically load listings data for reactivity
 loadListingsData <- function(city) {
-  listings <- readRDS(paste0("data/processed/", city, "_listings.Rds"))
+  listings <- readRDS(paste0("data/", city, "_listings.Rds"))
   return(listings)
 }
 
 # Dynamically load reviews data for reactivity
 loadReviewsData <- function(city) {
-  reviews <- readRDS(paste0("data/processed/", city, "_reviews.Rds"))
+  reviews <- readRDS(paste0("data/", city, "_reviews.Rds"))
   return(reviews)
 }
 
@@ -35,14 +27,10 @@ server <- function(input, output) {
     loadReviewsData(city = input$city)
   })
   
-  data <- tibble::tibble(name = c("A", "B", "C", "D", "E") ,
-                         value = c(3, 12, 5, 18, 45))
-  
   output$valueBoxListings <- renderValueBox({
-    valueBox(
-      prettyNum(nrow(listings()), big.mark = ","),
-      "Listings",
-      icon = icon("building"),
+    valueBox(prettyNum(nrow(listings()), big.mark = ","),
+             "Listings",
+             icon = icon("building"),
     )
   })
   
@@ -73,28 +61,59 @@ server <- function(input, output) {
     )
   })
   
-  output$plot1 <- renderPlot({
-    ggplot(data, aes(x = name, y = value)) +
-      geom_bar(stat = "identity")
-  })
-  
-  output$plot2 <- renderPlot({
-    ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-      geom_point(size = 6)
-  })
-  
-  output$plot3 <- renderPlot({
-    ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-      geom_point(size = 6)
-  })
-  
-  output$plot4 <- renderPlot({
-    ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-      geom_point(size = 6)
-  })
-  
   output$mapPrice <- renderLeaflet({
     mapsListingsPrice(listings = listings())
+  })
+  
+  output$analyzeTopHostsPlot <- renderPlot({
+    analyzeTopHosts(listings())
+  })
+  
+  output$analyzeNeighbourhoodByPricePlot <- renderPlot({
+    order <- "desc"
+    if (input$neighbourhoodPriceInputId == "Least Expensive") {
+      order <- "asc"
+    }
+    
+    anaylzeNeighbourhoodsByPrice(listings(), order = order, limit = input$neighbourhoodCountInputId)
+  })
+  
+  output$analyzeNeighbourhoodUI <- renderUI({
+    div(
+      class = "box",
+      style = "position: relative",
+      div(
+        style = "position: absolute; right: 0.2em; top: 0.5em;",
+        dropdown(
+          pickerInput(
+            inputId = "neighbourhoodPriceInputId",
+            choices = c("Most Expensive", "Least Expensive"),
+            choicesOpt = list(
+              icon = c(
+                "glyphicon glyphicon-arrow-up",
+                "glyphicon glyphicon-arrow-down"
+              )
+            ),
+            width = "100%",
+            inline = TRUE
+          ),
+          sliderInput(
+            inputId = 'neighbourhoodCountInputId',
+            label = 'Neighbourhood Count',
+            min = 5,
+            max = 20,
+            value = 10,
+            step = 5
+          ),
+          circle = FALSE,
+          icon = icon("gear"),
+          width = "300px",
+          tooltip = tooltipOptions(title = "Filter neighbourhood data"),
+          right = TRUE
+        )
+      ),
+      plotOutput("analyzeNeighbourhoodByPricePlot", height = 520)
+    )
   })
   
   output$dataTableListings <- renderDataTable({

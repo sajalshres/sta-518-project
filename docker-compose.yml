@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: app/dockerfile
+    image: sajalshres/airbnb-analysis-app:latest
+    ports:
+      - 3000:3000
+    container_name: airbnb-analysis-app
+  
+  api:
+    build:
+      context: .
+      dockerfile: api/dockerfile
+    image: sajalshres/airbnb-analysis-api:latest
+    ports:
+      - 8000:8000
+    container_name: airbnb-analysis-api

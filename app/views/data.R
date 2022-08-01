@@ -1,5 +1,4 @@
-library(DT)
-library(shinydashboard)
+## data.R ##
 
 listingItem <- fluidRow(
   box(dataTableOutput("dataTableListings"), title = "Listings Data", width = 12)

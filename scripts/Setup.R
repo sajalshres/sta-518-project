@@ -2,9 +2,10 @@
 packages <- c("tidyverse",
               "shiny",
               "shinydashboard",
-              "plumber",
-              "leaflet",
-              "DT")
+              #"plumber",
+              #"leaflet",
+              "DT",
+              "argparse")
 
 # Find installed packages
 is_packages_installed <-

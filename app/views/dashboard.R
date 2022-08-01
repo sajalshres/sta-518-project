@@ -1,4 +1,4 @@
-library(shinydashboard)
+## dashboard.R ##
 
 infoItems <- fluidRow(
   valueBoxOutput("valueBoxListings", width = 3),
@@ -7,24 +7,25 @@ infoItems <- fluidRow(
   valueBoxOutput("valueBoxReviews", width = 3),
 )
 
-sampleDashboardItems <- fluidRow(
-  box(plotOutput("plot1", height = 400)),
-  box(plotOutput("plot2", height = 400)),
-  box(plotOutput("plot3", height = 400)),
-  box(plotOutput("plot4", height = 400)),
-)
+mapItems <- fluidRow(box(leafletOutput("mapPrice")))
 
-mapItems <- fluidRow(
-  box(leafletOutput("mapPrice"))
-)
+anaylzeItems <-
+  fluidRow(box(plotOutput("analyzeTopHostsPlot", height = 500)),
+           column(width = 6,
+                  uiOutput("analyzeNeighbourhoodUI")), )
+
+sampleDashboardItems <-
+  fluidRow(box(plotOutput("plot1", height = 400)),
+           box(plotOutput("plot2", height = 400)),
+           box(plotOutput("plot3", height = 400)),
+           box(plotOutput("plot4", height = 400)),
+  )
+
+
 
 dashboardItem <- function() {
-  return(
-    tabItem(
-      tabName = "dashboard",
-      infoItems,
-      sampleDashboardItems,
-      mapItems
-    )
-  )
+  return(tabItem(tabName = "dashboard",
+                 infoItems,
+                 mapItems,
+                 anaylzeItems, ))
 }

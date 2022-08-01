@@ -1,0 +1,17 @@
+FROM rstudio/plumber
+LABEL org.opencontainers.image.authors="Sajal Shrestha <shressaj@mail.gvsu.edu>"
+
+# Setup working directory
+WORKDIR /app
+
+# Install packages
+RUN R -e "install.packages('tidyverse')"
+
+# Copy source code
+COPY api .
+
+# Copy data
+COPY data/processed data
+
+# Run plumber api
+CMD ["/app/app.R"]
