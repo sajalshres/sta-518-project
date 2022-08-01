@@ -16,7 +16,7 @@ anaylzeItems <-
       plotOutput("analyzeTopHostsPlot", height = 500)
     ),
     box(
-      title = "Top Hosts",
+      title = "Top Neighbourhoods By Price",
       sidebar = boxSidebar(
         id = "mycardsidebar",
         width = 40,
