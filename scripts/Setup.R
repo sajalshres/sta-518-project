@@ -1,9 +1,14 @@
+## setup.R ##
+library(R.utils)
+
 # Required packages
 packages <- c("tidyverse",
               "shiny",
               "shinydashboard",
-              #"plumber",
-              #"leaflet",
+              "shinydashboardPlus",
+              "waiter",
+              "plumber",
+              "leaflet",
               "DT",
               "argparse")
 
@@ -18,3 +23,15 @@ if (any(is_packages_installed == FALSE)) {
 
 # Load packages
 invisible(lapply(packages, library, character.only = TRUE))
+
+# Create symlinks for app
+createLink(
+  link = paste0(getwd(), "/app/data"),
+  target = paste0(getwd(), "/data/processed")
+)
+
+# Create symlinks for api
+createLink(
+  link = paste0(getwd(), "/api/data"),
+  target = paste0(getwd(), "/data/processed")
+)

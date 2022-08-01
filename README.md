@@ -72,3 +72,5 @@ sta-518-project
   <img src="./docs/images/api-screenshot.png" alt="Api Screenshot" width="800"/>
 </p>
 
+If you wish to use Docker, please check out [Setup with Docker](./docs/docker.md)
+
