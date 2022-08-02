@@ -12,9 +12,9 @@ Application is live at:
 
 - **Web Application**: [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com)
 
-- **API Application**: [api-airbnb.sajalshres.com](https://api-airbnb.sajalshres.com)
+- **API Application**: [api-airbnb.sajalshres.com](https://api-airbnb.sajalshres.com/__docs__/). Visit `/__docs__/` endpoint to view API documentation.
 
-**Note**: If you are having issues with [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com), please visit [https://sajalshres.shinyapps.io/airbnb-analysis/](https://sajalshres.shinyapps.io/airbnb-analysis/)
+**Note**: If you are having issues with [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com), please visit [https://sajalshres.shinyapps.io/airbnb-analysis/](https://sajalshres.shinyapps.io/airbnb-analysis/).
 
 ## Proposal
 
