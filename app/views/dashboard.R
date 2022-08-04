@@ -40,6 +40,7 @@ anaylzeItems <-
       sidebar = boxSidebar(
         id = "mycardsidebar",
         width = 40,
+        icon = icon("gear"),
         pickerInput(
           inputId = "neighbourhoodPriceInputId",
           choices = c("Most Expensive", "Least Expensive"),
