@@ -19,8 +19,18 @@ loadReviewsData <- function(city) {
 server <- function(input, output) {
   set.seed(518)
 
+  # Create waiter
+  waiter <- Waiter$new(html = tagList(spin_5(), "Loading app ..."), color = "#3c8dbc")
+
   # Reactive listings data
   listings <- reactive({
+    waiter$show()
+
+    on.exit({
+      Sys.sleep(1)
+      waiter$hide()
+    })
+
     loadListingsData(city = input$city)
   })
 
@@ -73,12 +83,22 @@ server <- function(input, output) {
     mapsListingsPrice(listings = listings())
   })
 
+  # UI Dashboard: Room Type Proportion -------------------------------------------------------------
+  output$analyzeRoomTypeProportion <- renderPlot({
+    analyzeRoomTypeProportion(listings = listings())
+  })
+
+  # UI Dashboard: Room Type Proportion -------------------------------------------------------------
+  output$analyzeRoomTypeDistribution <- renderPlot({
+    analyzeRoomTypeDistribution(listings = listings())
+  })
+
   # UI Dashboard: Top Hosts Box --------------------------------------------------------------------
   output$analyzeTopHostsPlot <- renderPlot({
     analyzeTopHosts(listings())
   })
 
-  # UI Dashboard: Neighborhood Price Box ----------------------------------------------------------
+  # UI Dashboard: Neighborhood Price Box -----------------------------------------------------------
   output$analyzeNeighbourhoodByPricePlot <- renderPlot({
     order <- "desc"
     if (input$neighbourhoodPriceInputId == "Least Expensive") {

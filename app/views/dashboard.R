@@ -1,5 +1,6 @@
 ## dashboard.R ##
 
+# Row: summary info
 infoItems <- fluidRow(
   valueBoxOutput("valueBoxListings", width = 3),
   valueBoxOutput("valueBoxHosts", width = 3),
@@ -7,7 +8,26 @@ infoItems <- fluidRow(
   valueBoxOutput("valueBoxReviews", width = 3),
 )
 
-mapItems <- fluidRow(box(leafletOutput("mapPrice")))
+# Row: map widgets
+mapItems <- fluidRow(
+  box(
+    title = "Explore Maps",
+    width = 8,
+    leafletOutput("mapPrice", height = 500)
+  )
+)
+
+# Row: analyze room type
+roomTypeItems <- fluidRow(
+  box(
+    title = "Room Type Proportion",
+    plotOutput("analyzeRoomTypeProportion", height = 500)
+  ),
+  box(
+    title = "Room Type Distribution",
+    plotOutput("analyzeRoomTypeDistribution", height = 500)
+  )
+)
 
 anaylzeItems <-
   fluidRow(
@@ -41,20 +61,8 @@ anaylzeItems <-
           step = 5
         )
       ),
-      plotOutput("analyzeNeighbourhoodByPricePlot", height = 520)
-    ),
-    column(
-      width = 6,
-      uiOutput("analyzeNeighbourhoodUI")
+      plotOutput("analyzeNeighbourhoodByPricePlot", height = 500)
     )
-  )
-
-sampleDashboardItems <-
-  fluidRow(
-    box(plotOutput("plot1", height = 400)),
-    box(plotOutput("plot2", height = 400)),
-    box(plotOutput("plot3", height = 400)),
-    box(plotOutput("plot4", height = 400)),
   )
 
 
@@ -64,6 +72,7 @@ dashboardItem <- function() {
     tabName = "dashboard",
     infoItems,
     mapItems,
+    roomTypeItems,
     anaylzeItems,
   ))
 }

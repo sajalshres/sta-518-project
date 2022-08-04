@@ -1,5 +1,27 @@
 
 
+analyzeRoomTypeProportion <- function(listings) {
+  listings %>%
+    count(room_type, sort = TRUE, name = "count") %>%
+    ggplot(aes(x = "", y = count, fill = reorder(room_type, -count))) +
+    geom_bar(
+      stat = "identity",
+      width = 1,
+      color = "white"
+    ) +
+    coord_polar("y", start = 0) +
+    guides(fill = guide_legend(title = "Room Type")) +
+    theme_void()
+}
+
+
+analyzeRoomTypeDistribution <- function(listings) {
+  listings %>%
+    mutate(price_log1p = log1p(price)) %>%
+    ggplot(aes(x = price_log1p, fill = room_type)) +
+    geom_density(alpha = 0.5)
+}
+
 analyzeTopHosts <- function(listings) {
   top_hosts <- listings %>%
     count(host_id, sort = TRUE, name = "count") %>%
