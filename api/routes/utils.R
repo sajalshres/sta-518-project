@@ -5,7 +5,7 @@ library(plumber)
 #* @get /echo
 #* @param msg The message to echo
 #* @tag utils
-echo <- function(msg=""){
+echo <- function(msg = "") {
   list(msg = paste0("The message is: '", msg, "'"))
 }
 
@@ -13,7 +13,7 @@ echo <- function(msg=""){
 #* Get the status of API
 #* @get /status
 #* @tag utils
-get_status <- function(){
+get_status <- function() {
   status <- "OK"
   return(list(status = status))
 }

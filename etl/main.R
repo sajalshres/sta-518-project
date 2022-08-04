@@ -9,21 +9,22 @@ source("modules/scrape.R")
 data_dir <- "data"
 
 parse_arguments <- function() {
-  parser <- ArgumentParser(description = 'Process Airbnb dataset')
-  
-  parser$add_argument('--cities',
-                      default = "chicago",
-                      help = "City codes")
-  
+  parser <- ArgumentParser(description = "Process Airbnb dataset")
+
+  parser$add_argument("--cities",
+    default = "chicago",
+    help = "City codes"
+  )
+
   args <- parser$parse_args()
-  
+
   return(args)
 }
 
 
 process_listings <- function(file_path) {
   listings <- readr::read_csv(file_path)
-  
+
   # Remove unwanted columns
   listings <- listings %>%
     select(
@@ -54,19 +55,21 @@ process_listings <- function(file_path) {
       beds,
       price
     ) %>%
-    mutate(host_since = format(as.Date(host_since), "%m/%d/%Y"),
-           .after = host_name) %>%
+    mutate(
+      host_since = format(as.Date(host_since), "%m/%d/%Y"),
+      .after = host_name
+    ) %>%
     mutate(bathrooms = parse_number(str_extract(bathrooms_text, "\\d*\\.?\\d+")), .after = beds) %>%
-    mutate(price = parse_number(price),) %>%
+    mutate(price = parse_number(price), ) %>%
     select(!bathrooms_text) %>%
     rename(neighbourhood = neighbourhood_cleansed)
-  
+
   # Replace empty values with NA
   listings[listings == ""] <- NA
-  
+
   # Replace N/A values with NA
   listings[listings == "N/A"] <- NA
-  
+
   # Drop rows with NA in id, name
   listings <- listings %>%
     drop_na(c("id", "name", "host_id", "host_name", "host_location", "host_neighbourhood"))
@@ -75,36 +78,35 @@ process_listings <- function(file_path) {
     filter(
       host_location == names(which.max(table(host_location)))
     )
-  
+
   return(listings)
 }
 
 process_reviews <- function(file_path) {
   reviews <- readr::read_csv(file_path)
-  
+
   # drop na
   reviews %>%
     drop_na()
-  
+
   return(reviews)
-  
 }
 
 # Start Process
 start_process <- function() {
   # Scrape the data
   scrape_info <- start_scrape()
-  
+
   # save scrape
   saveRDS(scrape_info, "data/processed/scrape_info.Rds")
-  
-  for(city in unique(scrape_info$city)) {
+
+  for (city in unique(scrape_info$city)) {
     print(paste("Processing for", city))
     # Process listings
     listings <- process_listings(file_path = paste0("data/raw/", city, "_listings.csv.gz"))
     # Save listings data
     saveRDS(listings, paste0("data/processed/", city, "_listings.Rds"), compress = TRUE)
-    
+
     # Process reviews
     reviews <- process_reviews(file_path = paste0("data/raw/", city, "_reviews.csv.gz"))
     # Save reviews data

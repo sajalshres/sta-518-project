@@ -33,8 +33,8 @@ anaylzeItems <-
           inline = TRUE
         ),
         sliderInput(
-          inputId = 'neighbourhoodCountInputId',
-          label = 'Neighbourhood Count',
+          inputId = "neighbourhoodCountInputId",
+          label = "Neighbourhood Count",
           min = 5,
           max = 20,
           value = 10,
@@ -47,20 +47,23 @@ anaylzeItems <-
       width = 6,
       uiOutput("analyzeNeighbourhoodUI")
     )
-)
+  )
 
 sampleDashboardItems <-
-  fluidRow(box(plotOutput("plot1", height = 400)),
-           box(plotOutput("plot2", height = 400)),
-           box(plotOutput("plot3", height = 400)),
-           box(plotOutput("plot4", height = 400)),
+  fluidRow(
+    box(plotOutput("plot1", height = 400)),
+    box(plotOutput("plot2", height = 400)),
+    box(plotOutput("plot3", height = 400)),
+    box(plotOutput("plot4", height = 400)),
   )
 
 
 
 dashboardItem <- function() {
-  return(tabItem(tabName = "dashboard",
-                 infoItems,
-                 mapItems,
-                 anaylzeItems, ))
+  return(tabItem(
+    tabName = "dashboard",
+    infoItems,
+    mapItems,
+    anaylzeItems,
+  ))
 }

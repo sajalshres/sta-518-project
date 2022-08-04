@@ -18,26 +18,26 @@ loadReviewsData <- function(city) {
 
 server <- function(input, output) {
   set.seed(518)
-  
+
   # Reactive listings data
   listings <- reactive({
     loadListingsData(city = input$city)
   })
-  
+
   # Reactive reviews data
   reviews <- reactive({
     loadReviewsData(city = input$city)
   })
-  
+
   # UI Dashboard: Info -----------------------------------------------------------------------------
   # Output listings count
   output$valueBoxListings <- renderValueBox({
     valueBox(prettyNum(nrow(listings()), big.mark = ","),
-             "Listings",
-             icon = icon("building"),
+      "Listings",
+      icon = icon("building"),
     )
   })
-  
+
   # Output hosts count
   output$valueBoxHosts <- renderValueBox({
     valueBox(
@@ -47,7 +47,7 @@ server <- function(input, output) {
       color = "purple",
     )
   })
-  
+
   # Output neighborhoods count
   output$valueBoxNeighbourhoods <- renderValueBox({
     valueBox(
@@ -57,7 +57,7 @@ server <- function(input, output) {
       color = "orange",
     )
   })
-  
+
   # Output reviews count
   output$valueBoxReviews <- renderValueBox({
     valueBox(
@@ -67,56 +67,59 @@ server <- function(input, output) {
       color = "green",
     )
   })
-  
+
   # UI Dashboard: Maps Box -------------------------------------------------------------------------
   output$mapPrice <- renderLeaflet({
     mapsListingsPrice(listings = listings())
   })
-  
+
   # UI Dashboard: Top Hosts Box --------------------------------------------------------------------
   output$analyzeTopHostsPlot <- renderPlot({
     analyzeTopHosts(listings())
   })
-  
+
   # UI Dashboard: Neighborhood Price Box ----------------------------------------------------------
   output$analyzeNeighbourhoodByPricePlot <- renderPlot({
     order <- "desc"
     if (input$neighbourhoodPriceInputId == "Least Expensive") {
       order <- "asc"
     }
-    
+
     anaylzeNeighbourhoodsByPrice(listings(), order = order, limit = input$neighbourhoodCountInputId)
   })
-  
+
   # UI Data: Listings Data Table -------------------------------------------------------------------
   output$dataTableListings <- DT::renderDataTable({
     listings() %>%
-      select(id,
-             name,
-             neighbourhood,
-             room_type,
-             accommodates,
-             bedrooms,
-             beds,
-             bathrooms,
-             price)
-  })
-  
-  # UI Data: Hosts Data Table ----------------------------------------------------------------------
-  output$dataTableHosts <- DT::renderDataTable({
-    listings() %>%
       select(
         id,
-        host_id,
-        host_name,
-        host_since,
-        host_neighbourhood,
-        host_response_time,
-        host_response_rate,
-        host_is_superhost
-      ) %>%
-      distinct(host_id, .keep_all = TRUE)
-  },
-  server = FALSE
+        name,
+        neighbourhood,
+        room_type,
+        accommodates,
+        bedrooms,
+        beds,
+        bathrooms,
+        price
+      )
+  })
+
+  # UI Data: Hosts Data Table ----------------------------------------------------------------------
+  output$dataTableHosts <- DT::renderDataTable(
+    {
+      listings() %>%
+        select(
+          id,
+          host_id,
+          host_name,
+          host_since,
+          host_neighbourhood,
+          host_response_time,
+          host_response_rate,
+          host_is_superhost
+        ) %>%
+        distinct(host_id, .keep_all = TRUE)
+    },
+    server = FALSE
   )
 }

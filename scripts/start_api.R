@@ -3,14 +3,15 @@ library(argparse)
 library(plumber)
 
 parse_arguments <- function() {
-  parser <- ArgumentParser(description = 'Process Airbnb dataset')
-  
-  parser$add_argument('--app-dir',
-                      default = "api",
-                      help = "Application directory")
-  
+  parser <- ArgumentParser(description = "Process Airbnb dataset")
+
+  parser$add_argument("--app-dir",
+    default = "api",
+    help = "Application directory"
+  )
+
   args <- parser$parse_args()
-  
+
   return(args)
 }
 

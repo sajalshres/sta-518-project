@@ -14,17 +14,17 @@ paginate_data <- function(res,
   start <- (page - 1) * page_size + 1
   # set end slice
   end <- page * page_size
-  
+
   # if page is 1, then data must be sliced from 1
   if (page == 1) {
     start <- page
   }
-  
+
   # if page is last, then slice all remaining rows
   if (page == total_pages) {
     end <- nrow(df)
   }
-  
+
   # handle error
   if (page > total_pages) {
     # Set status as bad request
@@ -37,11 +37,11 @@ paginate_data <- function(res,
       )
     )))
   }
-  
+
   # paginate the response based of page requested
   paginated_result <- df %>%
     slice(start:end)
-  
+
   # return response
   return(
     list(

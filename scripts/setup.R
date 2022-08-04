@@ -2,15 +2,17 @@
 library(R.utils)
 
 # Required packages
-packages <- c("tidyverse",
-              "shiny",
-              "shinydashboard",
-              "shinydashboardPlus",
-              "waiter",
-              "plumber",
-              "leaflet",
-              "DT",
-              "argparse")
+packages <- c(
+  "tidyverse",
+  "shiny",
+  "shinydashboard",
+  "shinydashboardPlus",
+  "waiter",
+  "plumber",
+  "leaflet",
+  "DT",
+  "argparse"
+)
 
 # Find installed packages
 is_packages_installed <-

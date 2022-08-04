@@ -4,9 +4,9 @@ analyzeTopHosts <- function(listings) {
   top_hosts <- listings %>%
     count(host_id, sort = TRUE, name = "count") %>%
     slice(1:10)
-  
+
   top_hosts %>%
-    ggplot(aes(x = reorder(as.factor(host_id),-count), y = count)) +
+    ggplot(aes(x = reorder(as.factor(host_id), -count), y = count)) +
     geom_bar(stat = "identity", width = 0.4) +
     xlab("Host ID") +
     ylab("Listings") +
@@ -18,7 +18,7 @@ anaylzeNeighbourhoodsByPrice <- function(listings, order = "asc", limit = 10) {
     select(neighbourhood, price) %>%
     group_by(neighbourhood) %>%
     summarise(average_price = mean(price))
-  
+
   if (order == "asc") {
     neighbourhoodsDf <- neighbourhoodsDf %>%
       arrange(average_price)
@@ -26,7 +26,7 @@ anaylzeNeighbourhoodsByPrice <- function(listings, order = "asc", limit = 10) {
     neighbourhoodsDf <- neighbourhoodsDf %>%
       arrange(desc(average_price))
   }
-  
+
   neighbourhoodsDf %>%
     slice(1:limit) %>%
     ggplot(mapping = aes(x = neighbourhood, y = average_price)) +

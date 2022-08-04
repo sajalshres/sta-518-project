@@ -22,11 +22,11 @@ get_summary <- function(res, city = "chicago") {
   # Read listing object by city
   listings <-
     readRDS(paste0("data/", city, "_listings.Rds"))
-  
+
   # Read reviews object by city
   reviews <-
     readRDS(paste0("data/", city, "_reviews.Rds"))
-  
+
   # Summarize listings data
   listings_summary <- listings %>%
     summarise(
@@ -35,18 +35,18 @@ get_summary <- function(res, city = "chicago") {
       hosts = n_distinct(host_id),
       neighbourhoods = n_distinct(neighbourhood)
     )
-  
+
   # Summarize reviews data
   reviews_summary <- reviews %>%
     summarise(
       reviews = n()
     )
-  
+
   # Combine summary
   summary <-
-    append(as.list(listings_summary[1,]), as.list(reviews_summary[1,]))
-  
-  
+    append(as.list(listings_summary[1, ]), as.list(reviews_summary[1, ]))
+
+
   return(summary)
 }
 
@@ -58,18 +58,20 @@ get_listings <- function(res, city = "chicago", page = 1) {
   # Read listing object by city
   listings <-
     readRDS(paste0("data/", city, "_listings.Rds"))
-  
+
   listings <- listings %>%
-    select(id,
-           name,
-           neighbourhood,
-           room_type,
-           accommodates,
-           bedrooms,
-           beds,
-           bathrooms,
-           price)
-  
+    select(
+      id,
+      name,
+      neighbourhood,
+      room_type,
+      accommodates,
+      bedrooms,
+      beds,
+      bathrooms,
+      price
+    )
+
   return(paginate_data(res, df = listings, page = as.integer(page)))
 }
 
@@ -81,7 +83,7 @@ get_hosts <- function(res, city = "chicago", page = 1) {
   # Read listing object by city
   listings <-
     readRDS(paste0("data/", city, "_listings.Rds"))
-  
+
   hosts <- listings %>%
     select(
       id,
@@ -94,7 +96,7 @@ get_hosts <- function(res, city = "chicago", page = 1) {
       host_is_superhost
     ) %>%
     distinct(host_id, .keep_all = TRUE)
-  
+
   return(paginate_data(res, df = hosts, page = as.integer(page)))
 }
 
@@ -106,7 +108,7 @@ get_reviews <- function(res, city = "chicago", page = 1) {
   # Read listing object by city
   reviews <-
     readRDS(paste0("data/", city, "_reviews.Rds"))
-  
+
   return(paginate_data(
     res,
     df = reviews,
