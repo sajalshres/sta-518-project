@@ -1,21 +1,5 @@
 ## ui.R ##
 
-library(tidyverse)
-# https://rstudio.github.io/DT/
-library(DT)
-# https://shiny.rstudio.com/articles/basics.html
-library(shiny)
-# https://rstudio.github.io/shinydashboard/get_started.html
-library(shinydashboard)
-# https://github.com/dreamRs/shinyWidgets
-library(shinyWidgets)
-# https://github.com/RinteRface/shinydashboardPlus
-library(shinydashboardPlus)
-# https://github.com/JohnCoene/waiter
-library(waiter)
-# https://rstudio.github.io/leaflet/
-library(leaflet)
-
 ## Read components
 source("components/header.R")
 source("components/sidebar.R")
