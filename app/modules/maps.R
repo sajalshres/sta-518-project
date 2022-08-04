@@ -20,8 +20,8 @@ mapsListingsPrice <- function(listings) {
       ~longitude,
       ~latitude,
       color = ~ pal(price_log1p),
-      weight = 1,
-      radius = 2,
+      weight = 2,
+      radius = 3,
       fillOpacity = 1,
       opacity = 1,
       label = lapply(

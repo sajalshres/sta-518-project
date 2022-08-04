@@ -15,6 +15,20 @@ body <- dashboardBody(
       .sw-dropdown-in {
         padding: 0px 0px !important;
       }
+
+      .map-box-row {
+        display: flex;
+      }
+
+      .map-leaflet-container {
+        flex-grow: 8;
+        padding: 0px 10px;
+      }
+
+      .map-controls-container {
+        padding: 0px 10px;
+        max-width: 300px;
+      }
     "
     )
   )),

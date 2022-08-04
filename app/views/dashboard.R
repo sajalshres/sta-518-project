@@ -12,8 +12,81 @@ infoItems <- fluidRow(
 mapItems <- fluidRow(
   box(
     title = "Explore Maps",
-    width = 8,
-    leafletOutput("mapPrice", height = 500)
+    width = 12,
+    div(
+      class = "map-box-row",
+      div(class = "map-leaflet-container", leafletOutput("mapPrice", width = "100%", height = 600)),
+      div(
+        class = "map-controls-container",
+        sliderInput(
+          inputId = "mapMarkerOpacitySliderInputId",
+          label = "Marker Opacity",
+          min = 0,
+          max = 1,
+          value = 1,
+          step = .1
+        ),
+        sliderInput(
+          inputId = "mapMarkerSizeSliderInputId",
+          label = "Marker Size",
+          min = 0,
+          max = 10,
+          value = 3,
+          step = 1
+        ),
+        pickerInput(
+          inputId = "mapColorPickerInputId",
+          label = "Color By",
+          choices = c("Price", "Room Type"),
+          width = "100%",
+          inline = FALSE
+        ),
+        pickerInput(
+          inputId = "mapNeighbourhoodPickerInputId",
+          label = "Neighbourhood",
+          choices = NULL,
+          multiple = TRUE,
+          width = "100%",
+          options = list(
+            `actions-box` = TRUE,
+            `none-selected-text` = "All"
+          ),
+          inline = FALSE
+        ),
+        pickerInput(
+          inputId = "mapRoomTypePickerInputId",
+          label = "Room Type",
+          choices = NULL,
+          multiple = TRUE,
+          width = "100%",
+          options = list(
+            `actions-box` = TRUE,
+            `none-selected-text` = "All"
+          ),
+          inline = FALSE
+        ),
+        radioGroupButtons(
+          inputId = "mapBedroomRadioGroupButtonsId",
+          label = "Bedrooms",
+          choices = c(
+            "1",
+            "2", "3", "4", "5+"
+          ),
+          selected = character(0),
+          justified = TRUE
+        ),
+        radioGroupButtons(
+          inputId = "mapBedroomRadioGroupButtonsId",
+          label = "Bathrooms",
+          choices = c(
+            "1+",
+            "2+", "3+", "4+"
+          ),
+          selected = character(0),
+          justified = TRUE
+        ),
+      )
+    )
   )
 )
 

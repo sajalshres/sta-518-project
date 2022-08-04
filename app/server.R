@@ -16,7 +16,7 @@ loadReviewsData <- function(city) {
   return(reviews)
 }
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   set.seed(518)
 
   # Create waiter
@@ -37,6 +37,11 @@ server <- function(input, output) {
   # Reactive reviews data
   reviews <- reactive({
     loadReviewsData(city = input$city)
+  })
+
+  observeEvent(listings(), {
+    updatePickerInput(session = session, inputId = "mapNeighbourhoodPickerInputId", choices = unique(listings()$neighbourhood))
+    updatePickerInput(session = session, inputId = "mapRoomTypePickerInputId", choices = unique(listings()$room_type))
   })
 
   # UI Dashboard: Info -----------------------------------------------------------------------------

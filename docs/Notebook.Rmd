@@ -47,10 +47,12 @@ listings <- listings %>%
     beds,
     price
   ) %>%
-  mutate(host_since = format(as.Date(host_since), "%m/%d/%Y"),
-         .after = host_name) %>%
+  mutate(
+    host_since = format(as.Date(host_since), "%m/%d/%Y"),
+    .after = host_name
+  ) %>%
   mutate(bathrooms = parse_number(str_extract(bathrooms_text, "\\d*\\.?\\d+")), .after = beds) %>%
-  mutate(price = parse_number(price),) %>%
+  mutate(price = parse_number(price), ) %>%
   select(!bathrooms_text) %>%
   rename(neighbourhood = neighbourhood_cleansed)
 
@@ -87,7 +89,7 @@ leaflet(listings) %>%
 ```{r map-listings-price}
 
 generate_label <- function(name, price) {
-  return (
+  return(
     paste0(
       "<p>", name, "</p>",
       "<p>", price, "</p>",
@@ -111,26 +113,26 @@ pal <-
 leaflet(data = map_data) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(
-    ~ longitude,
-    ~ latitude,
+    ~longitude,
+    ~latitude,
     color = ~ pal(price_log1p),
-    weight = 1,
-    radius = 2,
-    fillOpacity = 1,
-    opacity = 1,
+    weight = 0.5,
+    radius = 5,
+    fillOpacity = 0.5,
+    opacity = 0.5,
     label = lapply(
       paste0(
-        paste0("<P>Name: ",  map_data$name, "</P>"),
-        paste0("<P>Host: ",  map_data$host_name, "</P>"),
-        paste0("<P>Price: ",  map_data$price, "</P>")
-      ), 
+        paste0("<P>Name: ", map_data$name, "</P>"),
+        paste0("<P>Host: ", map_data$host_name, "</P>"),
+        paste0("<P>Price: ", map_data$price, "</P>")
+      ),
       htmltools::HTML
     )
   ) %>%
   addLegend(
     "bottomright",
     pal = pal,
-    values = ~ price_log1p,
+    values = ~price_log1p,
     title = "Price",
     opacity = 1,
   ) %>%
@@ -153,8 +155,8 @@ pal <-
 leaflet(data = map_data) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(
-    ~ longitude,
-    ~ latitude,
+    ~longitude,
+    ~latitude,
     color = ~ pal(room_type),
     weight = 1,
     radius = 2,
@@ -162,17 +164,17 @@ leaflet(data = map_data) %>%
     opacity = 1,
     label = lapply(
       paste0(
-        paste0("<P>Name: ",  map_data$name, "</P>"),
-        paste0("<P>Host: ",  map_data$host_name, "</P>"),
-        paste0("<P>Price: ",  map_data$price, "</P>")
-      ), 
+        paste0("<P>Name: ", map_data$name, "</P>"),
+        paste0("<P>Host: ", map_data$host_name, "</P>"),
+        paste0("<P>Price: ", map_data$price, "</P>")
+      ),
       htmltools::HTML
     )
   ) %>%
   addLegend(
     "bottomright",
     pal = pal,
-    values = ~ room_type,
+    values = ~room_type,
     title = "Price",
     opacity = 1,
   ) %>%
@@ -184,14 +186,14 @@ leaflet(data = map_data) %>%
 ```{r}
 listings %>%
   mutate(price_log1p = log1p(price)) %>%
-  ggplot(aes(x=price_log1p, fill=room_type)) +
+  ggplot(aes(x = price_log1p, fill = room_type)) +
   geom_density(alpha = 0.5)
 ```
 
 
 ```{r}
 listings %>%
-  count(room_type, sort = TRUE, name = "count") 
+  count(room_type, sort = TRUE, name = "count")
 ```
 
 
@@ -200,13 +202,14 @@ listings %>%
 listings %>%
   count(room_type, sort = TRUE, name = "count") %>%
   ggplot(aes(x = "", y = count, fill = reorder(room_type, -count))) +
-  geom_bar(stat = "identity",
-           width = 1,
-           color = "white") +
+  geom_bar(
+    stat = "identity",
+    width = 1,
+    color = "white"
+  ) +
   coord_polar("y", start = 0) +
-  guides(fill=guide_legend(title="Room Type")) +
+  guides(fill = guide_legend(title = "Room Type")) +
   theme_void()
-
 ```
 
 ```{r}
@@ -214,19 +217,19 @@ get_page_info <- function(row_count, page = 1) {
   page_size <- 1000
   page_start <- 1
   page_end <- 1000
-  
+
   total_pages <- ceiling(row_count / page_size)
-  
-  if(page == 1) {
+
+  if (page == 1) {
     return(list(start = page, end = page * page_size))
   }
-  if(page == total_pages) {
+  if (page == total_pages) {
     print("Last page")
   }
   return(list(start = (page - 1) * page_size + 1, end = page * page_size))
 }
 
-for(i in 1:21) {
+for (i in 1:21) {
   res <- get_page_info(row_count = 20333, page = i)
   print(paste(res$start, res$end))
 }
@@ -237,32 +240,35 @@ top_hosts <- listings %>%
   count(host_id, sort = TRUE, name = "count") %>%
   slice(1:10)
 
-ggplot(top_hosts, aes(x=reorder(as.factor(host_id), -count), y=count)) + 
-  geom_bar(stat = "identity", width = 0.4) +
+ggplot(top_hosts, aes(x = reorder(as.factor(host_id), -count), y = count, fill = reorder(host_id, count))) +
+  geom_bar(stat = "identity", width = 0.4, show.legend = FALSE) +
+  scale_fill_manual(values = rep(c("#2C3E50", "#E74C3C"), times = c(9, 1))) +
   xlab("Host ID") +
   ylab("Listings") +
-  coord_flip() 
+  coord_flip()
 ```
 
 ```{r}
-listings %>% 
+listings %>%
   mutate(price_log1p = log1p(price)) %>%
-  ggplot(aes(x=neighbourhood, y=price_log1p, fill=neighbourhood)) +
-  geom_boxplot(show.legend = FALSE) + coord_flip() 
+  ggplot(aes(x = neighbourhood, y = price_log1p, fill = neighbourhood)) +
+  geom_boxplot(show.legend = FALSE) +
+  coord_flip()
 ```
 ## Most expensive neighbourhoods
 
 ```{r}
 top_10_neighbourhood <- aggregate(list(listings$price), list(listings$neighbourhood), FUN = mean)
 colnames(top_10_neighbourhood) <- c("neighbourhood", "Average_price_per_neighborhood")
-top_10_neighbourhood <- top_10_neighbourhood[order(top_10_neighbourhood$Average_price_per_neighborhood),]
+top_10_neighbourhood <- top_10_neighbourhood[order(top_10_neighbourhood$Average_price_per_neighborhood), ]
 top_10_neighbourhood <- tail(top_10_neighbourhood, 12)
 top_10_neighbourhood <- head(top_10_neighbourhood, 10)
 r <- c()
-for(i in 10:1){r <- c(r, i)}
+for (i in 10:1) {
+  r <- c(r, i)
+}
 row.names(top_10_neighbourhood) <- r
 top_10_neighbourhood
-
 ```
 ```{r}
 expensive_neighbourhoods <- listings %>%
@@ -312,19 +318,19 @@ cheapest_neighbourhoods %>%
   ) +
   coord_flip() +
   coord_polar()
-
 ```
 
 
 
 ```{r}
 tema1 <- theme(
-              plot.title = element_text(size = 23, hjust = .5),
-              axis.text.x = element_text(size = 13, face = "bold"),
-              axis.text.y = element_text(size = 13, face = "bold"),
-              axis.title.x = element_text(size = 11),
-              axis.title.y = element_text(size = 11),
-              legend.position="none")
+  plot.title = element_text(size = 23, hjust = .5),
+  axis.text.x = element_text(size = 13, face = "bold"),
+  axis.text.y = element_text(size = 13, face = "bold"),
+  axis.title.x = element_text(size = 11),
+  axis.title.y = element_text(size = 11),
+  legend.position = "none"
+)
 
 expensive_neighbourhoods %>%
   slice(1:10) %>%
@@ -332,7 +338,7 @@ expensive_neighbourhoods %>%
   geom_bar(stat = "identity", mapping = aes(fill = neighbourhood, color = neighbourhood), alpha = .8, size = 1.5) +
   geom_label(mapping = aes(label = round(average_price, 2)), size = 6, fill = "#F5FFFA", fontface = "bold") +
   coord_flip() +
-  tema1 
+  tema1
 ```
 
 ```{r}
@@ -344,6 +350,9 @@ temp <- listings %>%
     neighbourhoods = n_distinct(neighbourhood)
   )
 
-as.list(temp[1,])
+as.list(temp[1, ])
 ```
 
+```{r}
+unique(listings$bathrooms)
+```

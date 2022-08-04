@@ -28,8 +28,9 @@ analyzeTopHosts <- function(listings) {
     slice(1:10)
 
   top_hosts %>%
-    ggplot(aes(x = reorder(as.factor(host_id), -count), y = count)) +
-    geom_bar(stat = "identity", width = 0.4) +
+    ggplot(aes(x = reorder(as.factor(host_id), -count), y = count, fill = reorder(host_id, count))) +
+    geom_bar(stat = "identity", width = 0.4, show.legend = FALSE) +
+    scale_fill_manual(values = rep(c("#2C3E50", "#E74C3C"), times = c(9, 1))) +
     xlab("Host ID") +
     ylab("Listings") +
     coord_flip()
