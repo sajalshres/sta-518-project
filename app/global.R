@@ -20,3 +20,5 @@ library(shinydashboardPlus)
 library(waiter)
 # https://rstudio.github.io/leaflet/
 library(leaflet)
+
+utils::globalVariables(c("select"))

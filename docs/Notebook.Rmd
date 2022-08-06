@@ -112,14 +112,15 @@ pal <-
 # render map
 leaflet(data = map_data) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons() %>%
   addCircleMarkers(
     ~longitude,
     ~latitude,
     color = ~ pal(price_log1p),
-    weight = 0.5,
-    radius = 5,
+    weight = 1,
+    radius = 3,
     fillOpacity = 0.5,
-    opacity = 0.5,
+    opacity = 1,
     label = lapply(
       paste0(
         paste0("<P>Name: ", map_data$name, "</P>"),
@@ -354,5 +355,37 @@ as.list(temp[1, ])
 ```
 
 ```{r}
-unique(listings$bathrooms)
+getwd()
 ```
+
+
+```{r}
+w <- rgdal::readOGR("../data/raw/chicago_neighbourhoods.geojson")
+
+m <- leaflet(w) %>%
+  setView(mean(map_data$longitude), mean(map_data$latitude), zoom = 12) %>%
+  addProviderTiles(providers$CartoDB.Positron)
+
+pal <- colorNumeric("viridis", NULL)
+
+m %>% addPolygons(
+  color = "#444444", weight = 1, smoothFactor = 0.5,
+  opacity = 1.0, fillOpacity = 0.5,
+  fillColor = ~ colorQuantile("YlOrRd", neighbourhood),
+  highlightOptions = highlightOptions(
+    color = "white", weight = 2,
+    bringToFront = TRUE
+  )
+)
+```
+```{r}
+c <- geojsonio::geojson_read("http://data.insideairbnb.com/united-states/il/chicago/2022-06-10/visualisations/neighbourhoods.geojson")
+```
+```{r}
+m <- leaflet(c) %>%
+  setView(mean(map_data$longitude), mean(map_data$latitude), zoom = 12) %>%
+  addProviderTiles(providers$CartoDB.Positron)
+
+m %>% addPolygons()
+```
+

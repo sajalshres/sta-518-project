@@ -20,14 +20,22 @@ server <- function(input, output, session) {
   set.seed(518)
 
   # Create waiter
-  waiter <- Waiter$new(html = tagList(spin_5(), "Loading app ..."), color = "#3c8dbc")
+  waiter <-
+    Waiter$new(
+      html = tagList(spin_5(), "Loading app ..."),
+      color = "#3c8dbc"
+    )
+  waiterMap <-
+    Waiter$new("map-leaflet-id",
+      html = tagList(spin_2(), "Updating map ..."),
+      color = "#3c8dbc"
+    )
 
   # Reactive listings data
   listings <- reactive({
     waiter$show()
 
     on.exit({
-      Sys.sleep(1)
       waiter$hide()
     })
 
@@ -40,9 +48,241 @@ server <- function(input, output, session) {
   })
 
   observeEvent(listings(), {
-    updatePickerInput(session = session, inputId = "mapNeighbourhoodPickerInputId", choices = unique(listings()$neighbourhood))
-    updatePickerInput(session = session, inputId = "mapRoomTypePickerInputId", choices = unique(listings()$room_type))
+    updatePickerInput(
+      session = session,
+      inputId = "mapNeighbourhoodPickerInputId",
+      choices = unique(listings()$neighbourhood),
+      selected = unique(listings()$neighbourhood)
+    )
+    updatePickerInput(
+      session = session,
+      inputId = "mapRoomTypePickerInputId",
+      choices = unique(listings()$room_type),
+      selected = unique(listings()$room_type)
+    )
+    updateSliderTextInput(
+      session = session,
+      inputId = "mapPriceSliderInputId",
+      choices = c(0, 50, 100, 150, 200, 250, 300, 400, 500, 1000, max(listings()$price)),
+      selected = c(0, max(listings()$price))
+    )
   })
+
+  observeEvent(input$mapMarkerOpacitySliderInputId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapMarkerSizeSliderInputId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapPriceSliderInputId,
+    {
+      waiterMap$show()
+
+      priceRange <<- input$mapPriceSliderInputId
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        priceRange = input$mapPriceSliderInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapNeighbourhoodPickerInputId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapColorPickerInputId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapRoomTypePickerInputId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapBedroomRadioGroupButtonsId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapBathroomRadioGroupButtonsId,
+    {
+      waiterMap$show()
+
+      updateMapsListingsPrice(
+        listings = listings(),
+        neighbourhoods = input$mapNeighbourhoodPickerInputId,
+        roomType = input$mapRoomTypePickerInputId,
+        colorBy = input$mapColorPickerInputId,
+        numOfBedrooms = input$mapBedroomRadioGroupButtonsId,
+        numOfBathrooms = input$mapBathroomRadioGroupButtonsId,
+        opacity = as.numeric(input$mapMarkerOpacitySliderInputId),
+        size = input$mapMarkerSizeSliderInputId
+      )
+
+      Sys.sleep(0)
+
+      waiterMap$hide()
+    },
+    ignoreNULL = TRUE,
+    ignoreInit = TRUE
+  )
+
+  observeEvent(input$mapResetButtonId,
+    {
+      updatePickerInput(
+        session = session,
+        inputId = "mapNeighbourhoodPickerInputId",
+        choices = unique(listings()$neighbourhood),
+        selected = unique(listings()$neighbourhood)
+      )
+      updatePickerInput(
+        session = session,
+        inputId = "mapRoomTypePickerInputId",
+        choices = unique(listings()$room_type),
+        selected = unique(listings()$room_type)
+      )
+      updateRadioGroupButtons(
+        session = session,
+        inputId = "mapBedroomRadioGroupButtonsId",
+        selected = character(0)
+      )
+      updateRadioGroupButtons(
+        session = session,
+        inputId = "mapBathroomRadioGroupButtonsId",
+        selected = character(0)
+      )
+    },
+    ignoreInit = TRUE
+  )
 
   # UI Dashboard: Info -----------------------------------------------------------------------------
   # Output listings count
@@ -110,7 +350,10 @@ server <- function(input, output, session) {
       order <- "asc"
     }
 
-    anaylzeNeighbourhoodsByPrice(listings(), order = order, limit = input$neighbourhoodCountInputId)
+    anaylzeNeighbourhoodsByPrice(listings(),
+      order = order,
+      limit = input$neighbourhoodCountInputId
+    )
   })
 
   # UI Data: Listings Data Table -------------------------------------------------------------------

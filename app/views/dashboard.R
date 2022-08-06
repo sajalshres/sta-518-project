@@ -15,7 +15,7 @@ mapItems <- fluidRow(
     width = 12,
     div(
       class = "map-box-row",
-      div(class = "map-leaflet-container", leafletOutput("mapPrice", width = "100%", height = 600)),
+      div(id = "map-leaflet-id", class = "map-leaflet-container", leafletOutput("mapPrice", width = "100%", height = 700)),
       div(
         class = "map-controls-container",
         sliderInput(
@@ -34,12 +34,12 @@ mapItems <- fluidRow(
           value = 3,
           step = 1
         ),
-        pickerInput(
-          inputId = "mapColorPickerInputId",
-          label = "Color By",
-          choices = c("Price", "Room Type"),
-          width = "100%",
-          inline = FALSE
+        sliderTextInput(
+          inputId = "mapPriceSliderInputId",
+          label = "Price Range",
+          choices = c(0, 50, 100, 150, 200, 250, 300, 400, 500, 1000, 10000),
+          selected = c(0, 100),
+          grid = TRUE
         ),
         pickerInput(
           inputId = "mapNeighbourhoodPickerInputId",
@@ -49,8 +49,15 @@ mapItems <- fluidRow(
           width = "100%",
           options = list(
             `actions-box` = TRUE,
-            `none-selected-text` = "All"
+            `none-selected-text` = "None"
           ),
+          inline = FALSE
+        ),
+        pickerInput(
+          inputId = "mapColorPickerInputId",
+          label = "Color By",
+          choices = c("Price", "Room Type"),
+          width = "100%",
           inline = FALSE
         ),
         pickerInput(
@@ -61,7 +68,7 @@ mapItems <- fluidRow(
           width = "100%",
           options = list(
             `actions-box` = TRUE,
-            `none-selected-text` = "All"
+            `none-selected-text` = "None"
           ),
           inline = FALSE
         ),
@@ -76,7 +83,7 @@ mapItems <- fluidRow(
           justified = TRUE
         ),
         radioGroupButtons(
-          inputId = "mapBedroomRadioGroupButtonsId",
+          inputId = "mapBathroomRadioGroupButtonsId",
           label = "Bathrooms",
           choices = c(
             "1+",
@@ -85,6 +92,12 @@ mapItems <- fluidRow(
           selected = character(0),
           justified = TRUE
         ),
+        actionButton(
+          inputId = "mapResetButtonId",
+          label = "Reset Filters",
+          style = "simple",
+          icon = icon("rotate")
+        )
       )
     )
   )
