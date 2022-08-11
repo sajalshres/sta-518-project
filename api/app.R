@@ -11,6 +11,8 @@ root_api <- pr()
 utils_api <- pr("routes/utils.R")
 # Data api object that provides data routes
 data_api <- pr("routes/data.R")
+# Analyze api object that provides analyze routes
+analyze_api <- pr("routes/analyze.R")
 
 root_api %>%
   # Set documentation function as swagger. Another alternative is redoc
@@ -41,5 +43,7 @@ root_api %>%
   pr_mount("/utils", utils_api) %>%
   # mount data routes
   pr_mount("/data", data_api) %>%
+  # mount analyze routes
+  pr_mount("/analyze", analyze_api) %>%
   # run the server
   pr_run(host = "0.0.0.0", port = 8000)
