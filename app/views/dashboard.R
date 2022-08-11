@@ -103,18 +103,7 @@ mapItems <- fluidRow(
   )
 )
 
-# Row: analyze room type
-roomTypeItems <- fluidRow(
-  box(
-    title = "Room Type Proportion",
-    plotOutput("analyzeRoomTypeProportion", height = 500)
-  ),
-  box(
-    title = "Room Type Distribution",
-    plotOutput("analyzeRoomTypeDistribution", height = 500)
-  )
-)
-
+# row analyze items
 anaylzeItems <-
   fluidRow(
     box(
@@ -152,14 +141,38 @@ anaylzeItems <-
     )
   )
 
+# Row: analyze room type
+roomTypeItems <- fluidRow(
+  box(
+    title = "Room Type Proportion",
+    plotOutput("analyzeRoomTypeProportion", height = 500)
+  ),
+  box(
+    title = "Room Type Distribution",
+    plotOutput("analyzeRoomTypeDistribution", height = 500)
+  )
+)
 
+# Row: analyze next items
+anaylzeNextItems <-
+  fluidRow(
+    box(
+      title = "Price Distribution For Neighbourhoods",
+      plotOutput("analyzeDistributionByPrice", height = 500)
+    ),
+    box(
+      title = "Most Common Words",
+      plotOutput("analyzeMostCommonWords", height = 500)
+    ),
+  )
 
 dashboardItem <- function() {
   return(tabItem(
     tabName = "dashboard",
     infoItems,
     mapItems,
-    roomTypeItems,
     anaylzeItems,
+    roomTypeItems,
+    anaylzeNextItems,
   ))
 }

@@ -328,16 +328,6 @@ server <- function(input, output, session) {
     mapsListingsPrice(listings = listings())
   })
 
-  # UI Dashboard: Room Type Proportion -------------------------------------------------------------
-  output$analyzeRoomTypeProportion <- renderPlot({
-    analyzeRoomTypeProportion(listings = listings())
-  })
-
-  # UI Dashboard: Room Type Proportion -------------------------------------------------------------
-  output$analyzeRoomTypeDistribution <- renderPlot({
-    analyzeRoomTypeDistribution(listings = listings())
-  })
-
   # UI Dashboard: Top Hosts Box --------------------------------------------------------------------
   output$analyzeTopHostsPlot <- renderPlot({
     analyzeTopHosts(listings())
@@ -355,6 +345,27 @@ server <- function(input, output, session) {
       limit = input$neighbourhoodCountInputId
     )
   })
+
+  # UI Dashboard: Room Type Proportion -------------------------------------------------------------
+  output$analyzeRoomTypeProportion <- renderPlot({
+    analyzeRoomTypeProportion(listings = listings())
+  })
+
+  # UI Dashboard: Room Type Distribution -----------------------------------------------------------
+  output$analyzeRoomTypeDistribution <- renderPlot({
+    analyzeRoomTypeDistribution(listings = listings())
+  })
+
+  # UI Dashboard: Distribution By Price ------------------------------------------------------------
+  output$analyzeDistributionByPrice <- renderPlot({
+    analyzeDistributionByPrice(listings = listings())
+  })
+
+  # UI Dashboard: Most Common Words ----------------------------------------------------------------
+  output$analyzeMostCommonWords <- renderPlot({
+    analyzeMostCommonWords(names = listings()$name)
+  })
+
 
   # UI Data: Listings Data Table -------------------------------------------------------------------
   output$dataTableListings <- DT::renderDataTable({

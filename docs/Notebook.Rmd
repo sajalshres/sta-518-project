@@ -10,10 +10,13 @@ library(leaflet)
 library(geojsonio)
 library(RColorBrewer)
 library(htmltools)
+library(wordcloud)
+library(RColorBrewer)
 ```
 
 ```{r load-data}
 listings <- readr::read_csv("../data/raw/chicago_listings.csv.gz")
+reviews <- readr::read_csv("../data/raw/chicago_reviews.csv")
 ```
 
 ```{r manage-clean-data}
@@ -354,10 +357,6 @@ temp <- listings %>%
 as.list(temp[1, ])
 ```
 
-```{r}
-getwd()
-```
-
 
 ```{r}
 w <- rgdal::readOGR("../data/raw/chicago_neighbourhoods.geojson")
@@ -368,16 +367,26 @@ m <- leaflet(w) %>%
 
 pal <- colorNumeric("viridis", NULL)
 
-m %>% addPolygons(
-  color = "#444444", weight = 1, smoothFactor = 0.5,
-  opacity = 1.0, fillOpacity = 0.5,
-  fillColor = ~ colorQuantile("YlOrRd", neighbourhood),
-  highlightOptions = highlightOptions(
-    color = "white", weight = 2,
-    bringToFront = TRUE
-  )
-)
+m %>% addPolygons()
 ```
+
+```{r}
+for (item in w@data$neighbourhood) {
+  print(item)
+}
+```
+
+```{r}
+neighbourhood_by_price <- listings %>%
+  select(neighbourhood, price) %>%
+  group_by(neighbourhood) %>%
+  summarise(average_price = mean(price)) %>%
+  arrange(average_price)
+
+neighbourhood_by_price[neighbourhood_by_price$neighbourhood == "East Side", 2]
+```
+
+
 ```{r}
 c <- geojsonio::geojson_read("http://data.insideairbnb.com/united-states/il/chicago/2022-06-10/visualisations/neighbourhoods.geojson")
 ```
@@ -387,5 +396,83 @@ m <- leaflet(c) %>%
   addProviderTiles(providers$CartoDB.Positron)
 
 m %>% addPolygons()
+```
+
+
+```{r}
+# Create a vector containing only the text
+texts <- listings$name
+# Create a corpus
+docs <- Corpus(VectorSource(texts))
+```
+
+```{r}
+docs <- docs %>%
+  tm_map(removeNumbers) %>%
+  tm_map(removePunctuation) %>%
+  tm_map(stripWhitespace)
+docs <- tm_map(docs, content_transformer(tolower))
+docs <- tm_map(docs, removeWords, stopwords("english"))
+```
+
+
+```{r}
+dtm <- TermDocumentMatrix(docs)
+matrix <- as.matrix(dtm)
+words <- sort(rowSums(matrix), decreasing = TRUE)
+df <- data.frame(word = names(words), freq = words)
+```
+
+```{r}
+set.seed(1234) # for reproducibility
+wordcloud(words = df$word, freq = df$freq, min.freq = 1, max.words = 200, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
+```
+
+```{r}
+library("tm")
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
+
+toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "\\|")
+```
+
+
+```{r}
+# Convert the text to lower case
+docs <- tm_map(docs, content_transformer(tolower))
+# Remove numbers
+docs <- tm_map(docs, removeNumbers)
+# Remove english common stopwords
+docs <- tm_map(docs, removeWords, stopwords("english"))
+# Remove your own stop word
+# specify your stopwords as a character vector
+docs <- tm_map(docs, removeWords, c("blabla1", "blabla2"))
+# Remove punctuations
+docs <- tm_map(docs, removePunctuation)
+# Eliminate extra white spaces
+docs <- tm_map(docs, stripWhitespace)
+# Text stemming
+# docs <- tm_map(docs, stemDocument)
+```
+
+```{r}
+dtm <- TermDocumentMatrix(docs)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m), decreasing = TRUE)
+d <- data.frame(word = names(v), freq = v)
+```
+
+
+```{r warning=FALSE, fig.width=6}
+set.seed(1234)
+wordcloud(
+  words = d$word, freq = d$freq, scale = c(5, .5), min.freq = 1,
+  max.words = 200, random.order = FALSE, rot.per = 0.35,
+  colors = brewer.pal(8, "Dark2")
+)
 ```
 

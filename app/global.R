@@ -20,5 +20,13 @@ library(shinydashboardPlus)
 library(waiter)
 # https://rstudio.github.io/leaflet/
 library(leaflet)
+# https://www.rdocumentation.org/packages/tm/versions/0.7-8
+library(tm)
+# https://www.rdocumentation.org/packages/SnowballC/versions/0.7.0
+library(SnowballC)
+# https://r-graph-gallery.com/wordcloud.html
+library(wordcloud)
+# https://cran.r-project.org/web/packages/RColorBrewer/index.html
+library(RColorBrewer)
 
 utils::globalVariables(c("select"))
