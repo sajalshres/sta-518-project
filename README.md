@@ -1,20 +1,19 @@
 # Analysis of Airbnb listings
 
-<p style='color:red'><b>NOTE</b>: Work In Progress. ETA: 08/08/2022</p>
-
 ## Introduction
 
 ![App Demo](./docs/images/app-demo.gif)
 
-[app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com) is a web application that provides an interactive dashboard containing visualizations and summaries to gain insights about Airbnb using the Airbnb dataset for the USA.
+Airbnb Analysis Dashboard is a web application that provides an interactive dashboard containing visualizations and summaries to gain insights about Airbnb using the Airbnb dataset for the USA.
 
 Application is live at:
 
-- **Web Application**: [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com)
+- **Web Application**: [https://sajalshres.shinyapps.io/airbnb-analysis/](https://sajalshres.shinyapps.io/airbnb-analysis/)
 
 - **API Application**: [api-airbnb.sajalshres.com](https://api-airbnb.sajalshres.com/__docs__/). Visit `/__docs__/` endpoint to view API documentation.
 
-**Note**: If you are having issues with [app-airbnb.sajalshres.com](https://app-airbnb.sajalshres.com), please visit [https://sajalshres.shinyapps.io/airbnb-analysis/](https://sajalshres.shinyapps.io/airbnb-analysis/).
+**Note:** API applicaiton is not hosted at the moment. Please refer to setup guide to run it locally.
+
 
 ## Proposal
 
